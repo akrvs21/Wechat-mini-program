@@ -1,0 +1,325 @@
+<style>
+  .list {
+    width: 100%;
+    bottom: 0;
+    top: 20rpx;
+    /* background-color: red; */
+    position: absolute;
+  }
+  .item {
+    width: 100%;
+    height: 300rpx;
+    position: relative;
+    /* background-color: green; */
+    border-bottom: 1px solid #dadada;
+  }
+  .address {
+    top: 50rpx;
+    left: 30rpx;
+    right: 130rpx;
+    height: 50rpx;
+    position: absolute;
+  }
+  .address_text {
+    color: rgb(32, 27, 27);
+    font-size: 35rpx;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .state {
+    right: 10rpx;
+    height: 50rpx;
+    width: 100rpx;
+    position: absolute;
+  }
+  .state_text {
+    color: rgb(187, 186, 184);
+    font-size: 25rpx;
+    display: block;
+  }
+  .date {
+    top: 120rpx;
+    height: 50rpx;
+    left: 30rpx;
+    right: 20rpx;
+    /* background-color: gray; */
+    position: absolute;
+  }
+  .date_text {
+    font-size: 32rpx;
+    color: gray;
+    display: block;
+    /* line-height: 50rpx; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* -webkit-line-clamp:1;  */
+  }
+  .container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 200rpx 0;
+    box-sizing: border-box;
+  }
+</style>
+
+<template>
+  <view class="list">
+    <!-- <block wx:for="{{items}}" wx:for-item="item" wx:key="index"> -->
+    <block wx:for="{{incidents}}" wx:for-item="item" wx:key="index">
+      <!-- Each cell -->
+      <view class="item" catchtap="goToDetails" wx:if="{{ item.event }}" data-eventId="{{item.event.iId}}" data-eventLon="{{item.event.dLongitude}}" data-eventLat="{{item.event.dLatitude}}">
+        <!-- Address -->
+        <view class="address">
+          <text class="address_text">{{ item.event.vcTitle }}</text>
+        </view>
+        <!-- state: 完结 -->
+        <view class="state" wx:if="{{item.event.sysVcCode == 1}}">
+          <text wx:if="{{item.rel.iUnread == 1}}" style="color: red;">未读</text>
+          <text class="state_text">完结</text>
+        </view>
+        <!-- state: 在办 -->
+        <view class="state" wx:if="{{item.event.sysVcCode == 0}}">
+          <text wx:if="{{item.rel.iUnread == 1}}" style="color: red;">未读</text>
+          <text class="state_text">在办</text>
+        </view>
+        <!-- string -->
+        <view class="date">
+          <text class="date_text">{{ item.event.dtOccurTime }}</text>
+          <text class="date_text">{{ item.event.vcName }}</text>
+          <text class="date_text">{{ item.event.vcAddress}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import {
+    ECApplication
+  } from '../../main/ECApp';
+  // import mui from '../../lib/mui.js';
+  // import muimin from '../../lib/mui.min.js';
+  // import sockjs from '../../lib/sockjs.min.js';
+  import stomp from '../../lib/stomp.min.js';
+  import hexMD5 from '../../utils/MD5.js';
+  import eventList from '../../utils/eventList.js'
+  // 服务器请求地址端口
+  var appUrl = wepy.$instance.globalData.appUrl;
+  // 服务器socket地址端口
+  var appSocket = wepy.$instance.globalData.appSocket;
+  //指挥端地址端口
+  var appServiceUrl = wepy.$instance.globalData.serviceUrl;
+  // var userId = wepy.$instance.globalData.iId;
+  // var userId = '';
+  var vcName = wepy.$instance.globalData.vcName;
+  var vcPassword = wepy.$instance.globalData.vcPassword;
+  var stompClient;
+  var lockReconnect = false;
+  var isEnd = false;
+  var eventId = ""
+  var eventLon = ""
+  var eventLat = ""
+  export default class Event extends wepy.page {
+    config = {
+      navigationBarTitleText: '事件'
+      // "enablePullDownRefresh": true
+    };
+    data = {
+      incidents: [],
+      userId: 0
+    };
+    /**Get all events by user ID */
+    getAllEventsByUserId() {
+      wepy.request({
+        url: appUrl + '/event/getAllEventsByUserId', //开发者服务器接口地址",
+        data: {
+          userId: this.userId
+        }, //请求的参数",
+        method: 'GET',
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          // console.log(res.data)
+          this.incidents = res.data.data;
+          this.$apply()
+          // console.log(this.incidents);
+          // console.log('this is from getAlleventsByUserId func ' + this.userId)
+        },
+        fail: () => {},
+        complete: () => {}
+      });
+    }
+    /** Go to details */
+    goToDetails(e) {
+      // wepy.navigateTo({
+      //   url: './eventDetail'
+      // });
+      // console.log(e);
+      // console.log(this.$parent.globalData.appUrl)
+      // console.log(appUrl)
+      // console.log(appSocket)
+      // console.log(appServiceUrl)
+      // console.log(userId)
+      // console.log(vcName)
+      // console.log(vcPassword)
+      eventId = e.currentTarget.dataset.eventid
+      eventLon = e.currentTarget.dataset.eventlon
+      eventLat = e.currentTarget.dataset.eventlat
+      console.log(e)
+      // console.log('This is event ID ' + eventId)
+      // console.log('This is event Lon ' + eventLon)
+      // console.log('This is event Lat ' + eventLat)
+      wepy.request({
+        url: appUrl + '/event/setUnreadTofalse', //开发者服务器接口地址",
+        data: {
+          operatorId: this.userId,
+          eventId: eventId
+        }, //请求的参数",
+        method: 'GET',
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          // this.getAllEventsByUserId();
+          wepy.$instance.globalData.eventId = eventId
+          wepy.navigateTo({
+            url: './eventDetail',
+            success: function() {
+              var page = getCurrentPages().pop();
+              if (page == undefined || page == null) return;
+              page.onLoad();
+            }
+          });
+        },
+        fail: () => {},
+        complete: () => {}
+      });
+      // eventList.detail(eventId, eventLon, eventLat);
+    }
+    //事件信息Websock
+    // initWebsock() {
+    //   console.log("指挥端socke正在连接！");
+    //   console.log(appServiceUrl);
+    //   var sock = new SockJS(appServiceUrl + '/websocket'); // 建立连接对象（还未发起连接）
+    //   stompClient = Stomp.over(sock); // 获取 STOMP 子协议的客户端对象
+    //   // 向服务器发起websocket连接并发送CONNECT帧
+    //   stompClient.connect({
+    //       userId: userId,
+    //     },
+    //     function connectCallback(frame) {
+    //       // 连接成功时（服务器响应 CONNECTED 帧）的回调方法
+    //       console.log("连接成功，frame = " + frame);
+    //       stompClient.subscribe('/topic/app/event', function(response) {
+    //         console.log("下发事件的websoket");
+    //         var resJson = JSON.parse(response.body);
+    //         var type = resJson.type;
+    //         switch (type) {
+    //           case "event":
+    //             if (resJson.data.userId == userId) {
+    //               var data = resJson.data;
+    //               console.log("收到事件，事件id：=======" + resJson.data.eventId);
+    //               //刷新事件
+    //               getAllEventsByUserId();
+    //               //创建通知 ne zakonchena 
+    //               // eventList.notification(resJson.data.eventId,
+    //               //   resJson.data.lon,
+    //               //   resJson.data.lat,
+    //               //   resJson.data.title,
+    //               //   resJson.data.detail); 
+    //             }
+    //             break;
+    //           default:
+    //             break;
+    //         }
+    //       });
+    //       stompClient.subscribe('/topic/app/feedback', function(response) {
+    //         console.log("下发指令的websoket");
+    //         var resJson = JSON.parse(response.body);
+    //         if (resJson.receiveId == userId) {
+    //           resJson.txtContent = resJson.content;
+    //           resJson.dtTime = resJson.time;
+    //           resJson.vcCode = "feedbackText";
+    //           console.log(resJson.txtContent);
+    //           console.log(resJson.eventLon);
+    //           console.log(resJson.event);
+    //           console.log(resJson.eventLat);
+    //           console.log(resJson.eventId);
+    //           // ne zakonchena
+    //           // eventList.notification(resJson.eventId, resJson.event, resJson.eventLon, resJson.eventLat);
+    //           // eventList.notification(resJson.data.eventId,
+    //           //    resJson.data.lon,
+    //           //    resJson.data.lat,
+    //           //    resJson.data.title,
+    //           //    resJson.data.detail);
+    //         }
+    //       });
+    //     },
+    //     function errorCallBack(error) {
+    //       console.log("连接失败"); // 连接失败时（服务器响应 ERROR 帧）的回调方法
+    //       reconnect();
+    //     }
+    //   );
+    //   stompClient.ws.onclose = function() {
+    //     console.log("关闭连接");
+    //     reconnect(); //重连
+    //   }
+    // }
+    // reconnect() {
+    //   if (lockReconnect) {
+    //     return
+    //   };
+    //   lockReconnect = true;
+    //   console.log("reconnect::" + appServiceUrl);
+    //   //没连接上会一直重连，设置延迟避免请求过多
+    //   setTimeout(function() {
+    //     wepy.request({
+    //       url: appServiceUrl + "/login", //开发者服务器接口地址",
+    //       data: {
+    //         username: "user",
+    //         password: hexMD5.Md5Decode("Sinvieemt@123")
+    //       }, //请求的参数",
+    //       method: 'POST',
+    //       dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+    //       success: res => {
+    //         console.log(JSON.stringify(data));
+    //         console.log("正在重连，当前时间" + new Date());
+    //         initWebsock(); //初始化事件信息、次生事件websocket
+    //         //刷新事件
+    //         getAllEventsByUserId();
+    //         lockReconnect = false;
+    //         wepy.request({
+    //           url: "https://218.17.84.149:10375" + "/emergency/preparation/dbTeam/search", //开发者服务器接口地址",
+    //           data: {
+    //             range: "3000"
+    //           }, //请求的参数",
+    //           method: 'POST',
+    //           dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+    //           success: res => {
+    //             console.log(JSON.stringify(res));
+    //           },
+    //           fail: () => {},
+    //           complete: () => {}
+    //         });
+    //       },
+    //       fail: () => {
+    //         console.log("指挥端websocket登录失败！");
+    //         lockReconnect = false;
+    //         reconnect();
+    //       },
+    //       complete: () => {}
+    //     });
+    //   }, 5000); //这里设置重连间隔(ms)
+    // }
+    /*******连接指挥端socket  end*************/
+    onLoad() {
+      // console.log(ECApplication)
+      // console.log(wepy)
+      // console.log(eventList)
+      this.userId = wepy.$instance.globalData.iId
+      this.getAllEventsByUserId()
+      // console.log('this is onLoad in event.wpy ' + this.userId)
+    }
+  }
+</script>

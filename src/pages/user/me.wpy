@@ -1,0 +1,81 @@
+<style>
+  .head-height {
+    height: 240rpx;
+  }
+  .button {
+    margin-top: 100rpx;
+  }
+  .head {
+    display: flex;
+    width: 100%;
+    background-color: #859cb8;
+    align-items: center;
+  }
+  .login-button {
+    opacity: 0;
+    width: 100%;
+    position: fixed;
+  }
+  .userinfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    position: fixed;
+  }
+  .userinfo-avatar {
+    width: 150rpx;
+    height: 150rpx;
+    margin: 30rpx;
+    border-radius: 50%;
+  }
+  .userinfo-nickname {
+    color: #333333;
+    font-size: 42rpx;
+  }
+</style>
+
+<template>
+  <navigator class="weui-cell  weui-cell_access weui-cell_example" url="/pages/user/user">
+    <view class="weui-cell__hd">
+      <image src="/images/user.jpg" style="width: 100rpx; height: 100rpx; margin-right: 16px; display: block;"></image>
+    </view>
+    <view class="weui-cell__bd">
+      <text>{{ user }}</text>
+    </view>
+    <view class="weui-cell__ft">更多</view>
+  </navigator>
+  <view class="button">
+    <button class="weui-btn weui-btn_primary" bindtap="logout">退出登录</button>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  // Sinvie@123
+  export default class Me extends wepy.page {
+    data = {
+      user: ''
+    }
+    onLoad() {
+      this.user = wepy.$instance.globalData.username
+    }
+    logout() {
+      try {
+        wx.clearStorageSync()
+      } catch (e) {
+        // Do something when catch error
+        console.log('error')
+      }
+      wepy.reLaunch({
+        url: '../../login'
+      });
+      console.log('from Me file')
+    }
+  }
+</script>
+
+
+
+
+

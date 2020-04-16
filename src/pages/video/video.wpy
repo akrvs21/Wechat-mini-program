@@ -1,0 +1,233 @@
+<style>
+    @import '/css/mui.wxss';
+    page {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .navbar {
+        flex: none;
+        display: flex;
+        background: #fff;
+        font-size: 30rpx;
+        color: #bbbbbb;
+        font-size: 1rem;
+    }
+    .navbar .item {
+        position: relative;
+        flex: auto;
+        text-align: center;
+        line-height: 90rpx;
+    }
+    .navbar .item.active {
+        color: #908df5;
+    }
+    .navbar .item.active:after {
+        content: "";
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 5rpx;
+        background: #908df5;
+    }
+    .swiper {
+        height: 100%;
+    }
+    .info {
+        display: flex;
+        height: 93rpx;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .info image {
+        width: 300rpx;
+        height: 300rpx;
+    }
+    .info text {
+        margin-top: 10rpx;
+        font-size: 30rpx;
+        color: #908df5;
+    }
+    #segmentedControl {
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+    .content_wrap {
+        height: 100vh;
+        overflow: auto;
+        transition: all .5s;
+    }
+    /* #item1 {
+                                                                            position: fixed;
+                                                                            margin-top: 77px;
+                                                                        } */
+    .section-event {
+        flex: 1;
+        /* height: 10rpx; */
+        /* background-color: rgb(98, 197, 230); */
+        font-size: 15px;
+        text-align: center;
+        border: 1px solid #999;
+    }
+    .section-date {
+        flex: 1;
+        /* background-color: rgb(78, 195, 235); */
+        /* height: 10rpx; */
+        font-size: 15px;
+        text-align: center;
+        border: 1px solid #999;
+    }
+    /* .wrapper {
+                                                        margin-left:auto;
+                                                        margin-right:auto;
+                                                        height:auto; 
+                                                        width:auto;
+                                                    } */
+    /* .info {
+                                                        float: left;
+                                                    } */
+    .parent {
+        display: flex;
+        background-color: rgb(183, 202, 209);
+        /* float: left;
+                                                        clear: left; */
+    }
+    .header_wrap {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        font-size: 0.8rem;
+        background: #fff;
+        z-index: 99;
+    }
+    .header_wrap>view {
+        display: block;
+        width: 30%;
+        height: 1px;
+        background: #000;
+    }
+    .mui-table-view text {
+        font-size: 32rpx;
+    }
+</style>
+
+<template>
+    <!-- <view> -->
+        <!-- Navigation -->
+        <view class="navbar">
+            <text wx:for="{{navbar}}" data-idx="{{index}}" class="item {{currentTab==index ? 'active' : ''}}" wx:key="unique" bindtap="navbarTap">{{ item }}</text>
+        </view>
+        <swiper class="swiper" current="{{ currentTab }}" duration="500" bindchange="swiperChange">
+            <swiper-item class="wrapper">
+                <view class="content_wrap" wx:if="{{ live.length != 0 }}">
+                    <view class="mui-table-view">
+                        <block wx:for="{{ live }}">
+                            <view class="mui-table-view-cell"><text>{{ item.dtStart }}</text>----<text>{{ item.dtStop }}</text></view>
+                        </block>
+                    </view>
+                </view>
+                <view wx:else> <text> No data </text></view>
+            </swiper-item>
+            <swiper-item>
+                <view class="content_wrap" wx:if="{{ meeting.length != 0 }}">
+                    <view class="mui-table-view">
+                        <block wx:for="{{ meeting }}">
+                            <view class="mui-table-view-cell"><text>{{ item.dtStart }}</text>----<text>{{ item.dtStop }}</text></view>
+                        </block>
+                    </view>
+                </view>
+                <view wx:else> <text> No data </text></view>
+            </swiper-item>
+        </swiper>
+        <!-- </view> -->
+</template>
+
+<script>
+    import wepy from 'wepy'
+    const app = getApp()
+    var appUrl = wepy.$instance.globalData.appUrl;
+    export default class video extends wepy.page {
+        config = {
+            "enablePullDownRefresh": true,
+            "navigationBarTitleText": "视频"
+        };
+        data = {
+            navbar: ["直播", "会议"],
+            currentTab: 0,
+            userId: 0,
+            live: [],
+            meeting: []
+        }
+        navbarTap(e) {
+            console.log(app)
+            this.setData({
+                currentTab: e.currentTarget.dataset.idx
+            })
+            app.globalData.currentTab = e.currentTarget.dataset.idx;
+        }
+        onShow() {
+            console.log(app)
+            this.setData({
+                currentTab: app.globalData.currentTab
+            })
+        }
+        swiperChange(e) {
+            this.setData({
+                currentTab: e.detail.current,
+            })
+            app.globalData.currentTab = e.detail.current;
+        }
+        loadMeetingData() {
+            wepy.request({
+                url: appUrl + "/conferences/allHistory", //开发者服务器接口地址",
+                data: {
+                    "operatorId": this.userId
+                }, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    console.log('from loadMeetingData')
+                    console.log(res)
+                    this.meeting = res.data.data
+                    this.$apply()
+                    console.log('success call loadMeetingData')
+                    console.log(this.meeting)
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+        }
+        loadLiveData() {
+            wepy.request({
+                url: appUrl + "/live/allHistory", //开发者服务器接口地址",
+                data: {
+                    "operatorId": 21 //this.userId 
+                }, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    console.log('success call loadLiveData')
+                    console.log(res)
+                    this.live = res.data.data
+                    this.$apply()
+                    console.log(this.live)
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+        }
+        onLoad() {
+            this.userId = wepy.$instance.globalData.iId
+            this.loadLiveData();
+            this.loadMeetingData();
+        }
+    }
+</script>

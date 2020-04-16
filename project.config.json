@@ -1,0 +1,30 @@
+{
+	"description": "A WePY project",
+	"setting": {
+		"urlCheck": false,
+		"es6": true,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true,
+		"coverView": true,
+		"autoAudits": false,
+		"showShadowRootInWxmlPanel": true,
+		"scopeDataCheck": false,
+		"checkInvalidKey": true,
+		"checkSiteMap": true,
+		"uploadWithSourceMap": true,
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		}
+	},
+	"compileType": "miniprogram",
+	"appid": "wx50f3b00a89c01390",
+	"projectname": "sinvei",
+	"miniprogramRoot": "dist/",
+	"simulatorType": "wechat",
+	"libVersion": "2.10.2",
+	"simulatorPluginLibVersion": {},
+	"condition": {}
+}

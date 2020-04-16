@@ -1,0 +1,364 @@
+<style lang="less">
+    @import '../../css/mui.wxss';
+    page {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    /* .main {
+                        display: flex;
+                        flex-direction: column;
+                        height: 100%;
+                        padding-top: 2.1875px;
+                    } */
+    .navbar {
+        flex: none;
+        display: flex;
+        background: #fff;
+        font-size: 30rpx;
+        color: #bbbbbb;
+    }
+    .navbar .item {
+        position: relative;
+        flex: auto;
+        text-align: center;
+        line-height: 90rpx;
+    }
+    .navbar .item.active {
+        color: #908df5;
+    }
+    .navbar .item.active:after {
+        content: "";
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 5rpx;
+        background: #908df5;
+    }
+    .swiper {
+        height: 100%;
+    }
+    .info {
+        display: flex;
+        height: 93rpx;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .info image {
+        width: 300rpx;
+        height: 300rpx;
+    }
+    .info text {
+        margin-top: 10rpx;
+        font-size: 30rpx;
+        color: #908df5;
+    }
+    #segmentedControl {
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+    .section-event {
+        flex: 1;
+        /* height: 10rpx; */
+        /* background-color: rgb(98, 197, 230); */
+        font-size: 15px;
+        text-align: center;
+        border: 1px solid #999;
+    }
+    .section-date {
+        flex: 1;
+        /* background-color: rgb(78, 195, 235); */
+        /* height: 10rpx; */
+        font-size: 15px;
+        text-align: center;
+        border: 1px solid #999;
+    } // .wrapper {
+    //     height: 100%;                                                                                                                        // margin-left:auto;
+    //                                                                                                                             // margin-right:auto;
+    //                                                                                                                             // height:auto; 
+    //                                                                                                                             // width:auto;
+    //                                                                                                                         } 
+    /* .info {
+                                                                                                                                                float: left;
+                                                                                                                                            } */
+    .parent {
+        display: flex;
+        background-color: rgb(183, 202, 209);
+        /* float: left;
+                                                                                                                                                clear: left; */
+    }
+    // .main {
+    //         width: 100%;
+    // bottom: 0;
+    // top: 20rpx;
+    // /* background-color: red; */
+    // position: absolute;
+    // }
+</style>
+
+<template>
+    <!-- <view> -->
+    <block>
+        <view class="navbar">
+            <text wx:for="{{navbar}}" data-idx="{{index}}" class="item {{currentTab==index ? 'active' : ''}}" wx:key="unique" bindtap="navbarTap">{{ item }}</text>
+        </view>
+        <swiper class="swiper" current="{{ currentTab}}" duration="200" bindchange="swiperChange">
+            <swiper-item class="wrapper">
+                <view class="info">
+                    <view id="segmentedControl" class="mui-segmented-control">
+                        <navigator class="mui-control-item {{ showToday ? 'mui-active' : '' }} " bindtap="todayEvent">今日事件</navigator>
+                        <navigator class="mui-control-item {{ showEvent ? 'mui-active' : '' }} " bindtap="subEvent">关注事件</navigator>
+                        <navigator class="mui-control-item {{ showReport ? 'mui-active' : '' }}" bindtap="todayReport">今日报导</navigator>
+                    </view>
+                </view>
+                <view hidden="{{ !isToday }}">
+                    <view class="parent">
+                        <view class="section-event">
+                            <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
+                                <view class="picker">
+                                    {{multiArray[1][multiIndex[1]]}}
+                                </view>
+                            </picker>
+                        </view>
+                        <view class="section-date">
+                            <picker mode="date" value="{{date}}" start="2015-01-01" end="2025-12-31" bindchange="bindDateChange">
+                                <view class="picker">
+                                    {{date}}
+                                </view>
+                            </picker>
+                        </view>
+                    </view>
+                    <!-- <text> 今日事件 </text> -->
+                    <view class="main" >
+                        <block wx:for="{{todayEventsList}}">
+                            <view class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+                                <view class="mui-table-view-cell">
+                                    <view class="mui-table">
+                                        <view class="mui-table-cell mui-col-xs-10">
+                                            <view>
+                                                <text class="mui-ellipsis" style="font-weight: normal; font-size: 1.0625">
+                    												{{item.vc_title}}</text>
+                                                <text class="mui-h6 mui-ellipsis" style="display: block;">
+                    												{{item.txt_report_description}}</text>
+                                                <text class="mui-h6 mui-ellipsis">
+                    												{{item.dt_occur_time}}</text>
+                                            </view>
+                                            <button wx:if="{{item.attention=='false'}}" class="mui-btn  mui-pull-right">未关注
+                    										</button>
+                                            <button wx:if="{{item.attention=='true'}}" class="mui-btn mui-pull-right" style="background-color: #007AFF;color: white;">已关注
+                    										</button>
+                                        </view>
+                                    </view>
+                                </view>
+                            </view>
+                        </block>
+                    </view>
+                </view>
+                <view hidden="{{ !isEvent }}">
+                    <text>关注事件</text>
+                </view>
+                <view hidden="{{ !isReport }}">
+                    <text>今日报导</text>
+                </view>
+            </swiper-item>
+            <swiper-item>
+                <view class="info">
+                    <text>some info</text>
+                </view>
+            </swiper-item>
+        </swiper>
+    </block>
+    <!-- </view> -->
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import message from '../../utils/toast.js'
+    var appUrl = wepy.$instance.globalData.appUrl
+    var api = wepy.$instance.globalData.api
+    // var id = wepy.$instance.globalData.iId
+    const regeneratorRuntime = require('../../lib/regenerator-runtime/runtime')
+    export default class Board extends wepy.page {
+        config = {
+            "enablePullDownRefresh": true,
+            "navigationBarTitleText": "看板"
+        };
+        data = {
+            typeObj: {
+                userId: '',
+                date: '',
+                selectType: '',
+                eventTypeId: ''
+            },
+            todayEventsList: [],
+            showToday: true,
+            isEvent: false,
+            isReport: false,
+            isToday: true,
+            showEvent: false,
+            showReport: false,
+            viewID: 'main',
+            systemInfo: {},
+            navbar: ['事件看板', '趋势分析'],
+            currentTab: 0,
+            temp: [],
+            temp1: [],
+            temp2: [],
+            multiArray: [
+                ['事件类型', '事发区域'],
+                ["自然灾害", "事故灾难", "公共卫生", "社会安全", "全部"]
+            ],
+            multiIndex: [0, 0],
+            date: '',
+        }
+        // methods = {
+        navbarTap(e) {
+            this.currentTab = e.currentTarget.dataset.idx
+            wepy.$instance.globalData.currentTab = e.currentTarget.dataset.idx;
+        }
+        makeReq() {
+            return new Promise(resolve => {
+                wepy.request({
+                    url: appUrl + "/event/getEventType", //开发者服务器接口地址",
+                    data: {}, //请求的参数",
+                    method: 'GET',
+                    dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                    success: res => {
+                        // console.log(res)
+                        this.temp = res.data.data
+                        this.$apply()
+                        // console.log('the temp var')
+                        // console.log(this.temp)
+                        return resolve()
+                    },
+                    fail: () => {},
+                    complete: () => {}
+                });
+            })
+        }
+        onLoad() {
+            var t = 5;
+            let today = new Date()
+            let now = today.getFullYear() + '-' + (today.getMonth() < 10 ? '0' : '') + (today.getMonth() + 1) + '-' + (today.getDate() < 10 ? '0' : '') + today.getDate()
+            this.date = now
+            // console.log('Now is: ' + now)
+            this.currentTab = wepy.$instance.globalData.currentTab
+            this.makeReq().then(result => {
+                // console.log('onLoad')
+                // console.log(this.temp)
+                for (let j = 0; j < this.temp[0].children.length; j++) {
+                    this.temp1[j] = this.temp[0].children[j].text
+                }
+                for (let k = 0; k < this.temp[1].children.length; k++) {
+                    this.temp2[k] = this.temp[1].children[k].text
+                }
+            });
+        }
+        swiperChange(e) {
+            this.currentTab = e.detail.current,
+                wepy.$instance.globalData.currentTab = e.detail.current;
+        }
+        bindMultiPickerChange(e) {
+            // console.log('from bindMultiPickerChange func')
+            // console.log(e)
+            this.multiIndex = e.detail.value
+            this.typeObj.selectType = e.detail.value[1]
+            this.typeObj.eventTypeId = e.detail.value[0]
+            this.typeObj.userId = wepy.$instance.globalData.iId
+            this.typeObj.date = this.date
+            // console.log(this.multiArray[1][e.detail.value[1]])
+            // debugger;
+            wepy.request({
+                url: appUrl + "/event/getTodayEvents", //开发者服务器接口地址",
+                data: this.typeObj, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    console.log('from callback in bindMultiPickerChange')
+                    // console.log('the global id in callback' + wepy.$instance.globalData.iId)
+                    // console.log('obj id is: ' + this.typeObj.userId)
+                    console.log(this.typeObj)
+                    console.log(res)
+                    this.todayEventsList = res.data.data
+                    this.$apply()
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+        }
+        bindDateChange(e) {
+            // console.log('bindDateChange')
+            // console.log(e)
+            this.date = e.detail.value
+            console.log(this.date)
+            console.log('selectType ' + this.typeObj.selectType)
+            console.log('eventTypeId ' + this.typeObj.eventTypeId)
+            if (this.typeObj.selectType === '' || this.typeObj.eventTypeId === '') {
+                message.showMessage('提示', '选择事件类型!')
+            } else {
+                this.typeObj.date = this.date
+                wepy.request({
+                    url: appUrl + "/event/getTodayEvents", //开发者服务器接口地址",
+                    data: this.typeObj, //请求的参数",
+                    method: 'GET',
+                    dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                    success: res => {
+                        console.log('from callback in bindDateChange')
+                        console.log(this.typeObj)
+                        console.log(res)
+                        this.todayEventsList = res.data.data
+                        this.$apply()
+                        console.log(this.todayEventsList)
+                    },
+                    fail: () => {},
+                    complete: () => {}
+                });
+            }
+        }
+        bindMultiPickerColumnChange(e) {
+            var data = {
+                multiArray: this.data.multiArray,
+                multiIndex: this.data.multiIndex
+            };
+            data.multiIndex[e.detail.column] = e.detail.value;
+            switch (data.multiIndex[0]) {
+                case 0:
+                    data.multiArray[1] = this.temp1; //["自然灾害", "事故灾难", "公共卫生", "社会安全", "全部"];
+                    break;
+                case 1:
+                    data.multiArray[1] = this.temp2; //["其他", "宝安区", "大鹏新区", "福田区", "公明街道办", "光明区", "龙岗区", "龙华区", "罗湖区", "南山区", "坪山区", "深圳特别合作区", "盐田区", "全部"];
+                    break;
+            }
+            console.log(data);
+            this.setData(data);
+        }
+        todayEvent() {
+            this.isToday = true;
+            this.isEvent = false;
+            this.isReport = false;
+            this.showToday = true;
+            this.showEvent = false;
+            this.showReport = false;
+        }
+        subEvent() {
+            this.isToday = false;
+            this.isEvent = true;
+            this.isReport = false;
+            this.showToday = false;
+            this.showEvent = true;
+            this.showReport = false;
+        }
+        todayReport() {
+            this.isToday = false;
+            this.isEvent = false;
+            this.isReport = true;
+            this.showToday = false;
+            this.showEvent = false;
+            this.showReport = true;
+        }
+    }
+</script>

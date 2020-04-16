@@ -1,0 +1,264 @@
+<style>
+    @import '/css/mui.wxss';
+    #header {
+        background-color: #3F4563;
+        display: flex;
+        align-items: center;
+    }
+    .eventAddress {
+        padding-top: 0.3125rem;
+    }
+    #eventDetail {
+        padding-top: 0.3125rem;
+    }
+    .mui-ellipsis {
+        padding-top: 0.3125rem;
+    }
+    #eventDetail {
+        padding-top: 0.3125rem;
+    }
+    .mui-ellipsis-2 {
+        padding-top: 0.3125rem;
+    }
+    .eventDescription {
+        background-color: #555555;
+        color: #FFFFFF;
+        margin-top: 0rem;
+        margin-bottom: 1rem;
+    }
+    .eventDescription .mui-active {
+        background-color: #555555;
+    }
+    /* 图片预览 */
+    .shade {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        z-index: 999;
+    }
+    /*图片预览*/
+    .image-popup {
+        position: absolute;
+        margin: auto;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        max-width: 100%;
+        max-height: 100%;
+    }
+    /* 长英文或数字换行 */
+    p {
+        color: #000000;
+        word-wrap: break-word;
+        word-break: break-all;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+    .pay-hint-content {
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-top: 10px;
+        font-size: 13px;
+        color: #888;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .ellipsis {
+        -webkit-line-clamp: 3;
+        opacity: 0.75
+    }
+    .unellipsis {
+        -webkit-line-clamp: 0;
+        opacity: 1
+    }
+    .img {
+        position: absolute;
+        width: 40rpx;
+        height: 43rpx;
+        left: 50%;
+        transform: translate(-50%);
+    }
+    .arrow {
+        width: 40rpx;
+        height: 40rpx;
+        margin: 10rpx auto;
+    }
+</style>
+
+<template>
+    <view>
+        <!-- Event description -->
+        <view class="eventDescription mui-table-view mui-table-view-striped mui-table-view-condensed">
+            <view class="mui-table-view-cell">
+                <view class="mui-table">
+                    <view class="mui-table-cell mui-col-xs-10">
+                        <text>{{ eventDetails.event.vcTitle }}</text>
+                        <text class="mui-h5" style="color: #cccccc;">
+                                                                                                                            {{eventDetails.event.dtOccurTime}}
+                                                                                                                        </text>
+                        <text class="mui-h5 mui-ellipsis-2" style="color: #cccccc;">
+                                                                                                                            {{eventDetails.event.vcName}}
+                                                                                                                        </text>
+                        <text class=" eventAddress mui-h5 mui-ellipsis" style="color: #cccccc;">
+                                                                                                                            {{eventDetails.event.vcAddress}}
+                                                                                                                        </text>
+                        <text class="pay-hint-content {{fold ? 'ellipsis' : 'unellipsis' }}" style="color: #cccccc;">
+                                                                                                                            {{eventDetails.event.txtReportDescription}}
+                                                                                                                        </text>
+                        <view bindtap='ellipsis'>
+                            <image class="img" src="../../images/more.png"></image>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <!-- Appendix -->
+        <view class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+            <view class="weui-cell weui-cell_access" catchtap="showAttachments">
+                <view class="weui-cell__bd">
+                    <text>展开附件</text>
+                </view>
+                <!-- <view class="weui-cell__ft"> -->
+                <image class="arrow" src="../../images/{{ showAtt ? 'up' : 'down' }}.png">
+            </view>
+        </view>
+        <view class="mui-collapse-content" wx:if="{{showAtt}}">
+            <view class="mui-table">
+                <view class="mui-table-cell">
+                    <view class="mui-ellipsis">
+                        <block wx:for="{{ eventDetails.appAttachments }}">
+                            <text wx:if="{{ item.vcFilename }}" style="display: block" data-path='{{ item.vcPath }}' data-filename='{{ item.vcFilename + item.vcExtension}}' bindtap="downloadFile">{{ item.vcFilename }}</text>
+                        </block>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <!-- Incident report -->
+        <view class="mui-table-view mui-table-view-striped mui-table-view-condensed" style="margin-top: 1rem;">
+            <view class="mui-table-view-cell">
+                事件续报：
+            </view>
+            <view wx:for="{{ eventDetails.eventDeals }}" class="mui-table-view-cell">
+                <text class="mui-h5 mui-ellipsis" style="display: block">{{item.dtDealTime}}</text>
+                <text id="eventDetail1" class="mui-h mui-ellipsis-" style="color: #000000;">{{item.txtDescription}}</text>
+            </view>
+        </view>
+        <!-- Button -->
+        <view class="mui-row">
+            <view class="mui-button-row">
+                <button type="button" class="mui-btn mui-btn-danger" style="margin-bottom: 3rem;width: 9rem;background-color: red;">进入处置</button>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    var appUrl = wepy.$instance.globalData.appUrl
+    var apatchUrl = wepy.$instance.globalData.apatchUrl
+    export default class Eventdetail extends wepy.page {
+        config = {
+            "enablePullDownRefresh": true, // Sinvieemt@123
+        };
+        data = {
+            eventDetails: [],
+            fold: true,
+            showAtt: false
+        }
+        downloadFile(e) {
+            console.log(e)
+            let path = e.currentTarget.dataset.path
+            let filename = e.currentTarget.dataset.filename
+            if (path.charAt(0) != '/') {
+                path = '/' + path
+            }
+            if (path.charAt(path.length - 1) != '/') {
+                path = path + '/'
+            }
+            console.log(path)
+            let url = apatchUrl + path + filename
+            wx.downloadFile({
+                url: url, //仅为示例，并非真实的资源
+                success(res) {
+                    console.log('success')
+                    console.log(res)
+                    },
+
+                fail(res) {
+                    console.log('fail')
+                    console.log(res)
+                }
+            })
+            // wepy.uploadFile({
+            //   url: url, // 下载资源的 url
+            //   success: res => {
+            //       console.log(res)
+            //   },
+            //   fail: () => {},
+            //   complete: () => {}
+            // });
+            console.log(url)
+        }
+        showAttachments(e) {
+            console.log('this is showAttachments')
+            console.log(this.showAtt)
+            this.showAtt = !this.showAtt
+            console.log(this.showAtt)
+            console.log(this.eventDetails)
+        }
+        getEventDetails() {
+            wepy.request({
+                url: appUrl + "/event/getEventResources", //开发者服务器接口地址",
+                data: {
+                    eventId: this.eventId  //118
+                }, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    console.log('From getEventDetails')
+                    console.log(res)
+                    // console.log(res.data.data.event)
+                    this.eventDetails = res.data.data
+                    this.$apply()
+                    console.log(this.eventDetails)
+                    //   this.eventDeals 
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+        }
+        getMiniEvents() {
+            wepy.request({
+                url: appUrl + "/event/getEventType", //开发者服务器接口地址",
+                data: {}, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    console.log('from mini events')
+                    console.log(res)
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+        }
+        ellipsis() {
+            // var that = this;
+            var val = !this.fold;
+            this.fold = !this.fold
+            console.log('ellipsis is pressed')
+        }
+        onLoad() {
+            this.eventId = wepy.$instance.globalData.eventId
+            this.getEventDetails()
+            this.getMiniEvents()
+            console.log(this.fold)
+        }
+    }
+</script>

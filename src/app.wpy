@@ -1,0 +1,164 @@
+<style>
+  @import 'css/weui.wxss';
+  @import 'css/font-awesome.wxss';
+</style>
+
+<script>
+  import wepy from 'wepy';
+  // const query = require('./utils/utils.js')
+  const api = require('./utils/api')
+
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'login',
+        'pages/board/board',
+        
+        
+        'pages/user/user',
+        'pages/user/me',
+        'pages/video/video',
+        'pages/event/event',
+        'pages/event/eventDetail',
+        
+        'pages/contacts/contactList',
+        'pages/contacts/contact',
+        'components/moveverify/moveverify',
+        'pages/event/downloadList',
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#022072',
+        navigationBarTitleText: 'Wechat',
+        navigationBarTextStyle: 'white'
+      },
+      style: 'v2',
+      sitemapLocation: '../sitemap.json',
+      tabBar: {
+        list: [{
+            pagePath: 'pages/event/event',
+            text: '事件',
+            iconPath: '/images/icon2.png',
+            selectedIconPath: '/images/icon2.png'
+          },
+          {
+            pagePath: 'pages/contacts/contactList',
+            text: '通讯录',
+            iconPath: '/images/icon4.png',
+            selectedIconPath: '/images/icon4.png'
+          },
+          {
+            pagePath: 'pages/video/video',
+            text: '视频',
+            iconPath: '/images/icon5.png',
+            selectedIconPath: '/images/icon5.png'
+          },
+          {
+            pagePath: 'pages/board/board',
+            text: '看板',
+            iconPath: '/images/icon3.png',
+            selectedIconPath: '/images/icon3.png'
+          },
+          {
+            pagePath: 'pages/user/me',
+            text: '我',
+            iconPath: '/images/icon1.png',
+            selectedIconPath: '/images/icon1.png'
+          }
+        ]
+      }
+    };
+
+    onLaunch() {
+      console.log('on launch');
+    }
+    globalData = {
+      //服务器Ip
+      //    appIp : "218.17.84.149",
+      //    appIp : "19.15.54.121",
+      //    appIp : "120.77.17.30", //ali
+      //    appIp : "19.16.40.244",
+      //    appIp : "192.168.7.44", //xrw
+      appIp: '192.168.1.80', //YX
+      //    appIp : "10.210.202.242",
+      //    appIp : "10.123.192.11",
+      //    appIp : "218.17.84.149", //深圳 外网
+      //    appIp : "10.175.19.164",
+      //    appIp : "10.253.114.9",//sz 内网
+      //    appIp : "10.10.103.80",
+      //    appIp : "125.75.8.170",//兰州
+      //    appIp : "10.10.101.182",//清远
+      //地图socket端口
+      socketPort: 8056,
+      //    服务器socket
+      //    appSocket : "10.10.101.182:8055",//清远
+      //    appSocket : "218.17.84.149:8055",//深圳
+      //    appSocket : "192.168.7.44:8055",//xrw
+      appSocket: '192.168.1.80:8055', //yx
+      //服务器地址端口
+      //    appUrl : "http://19.15.54.121:8055",
+      //    appUrl : "http://120.77.17.30:8055",
+      //    appUrl : "http://19.16.40.244:8055",
+      //    appUrl : "http://192.168.7.44:8055", //xrw
+
+      appUrl: 'http://192.168.3.15:8081/', //1
+
+      // appUrl: 'http://112.93.129.113:20500', // 2 sadi
+
+      // appUrl: "http://192.168.3.21:8055/", sadi
+      // appUrl: "http://192.168.1.80:8055", //YX sadi
+      //    appUrl : "https://218.17.84.149:8055", //深圳 外网
+      //    appUrl : "https://10.210.202.242:8055",
+      //appUrl : "https://10.123.192.11:8055",
+      //    appUrl : "10.175.19.164:5060",
+      //    appUrl : "10.253.114.9:8055", //sz 内网
+      //    appUrl : "http://10.10.103.80:8055",
+      //    appUrl : "http://125.75.8.170:8055",//兰州
+      //    appUrl : "http://10.10.101.182:8055",//清远
+      //https服务器地址端口（未启用）
+      //    httpsAppUrl : "https://19.15.54.121:8055",
+      //    httpsAppUrl : "https://120.77.17.30:8055",
+      httpsAppUrl: 'https://218.17.84.149:8055', //深圳
+      //        httpsAppUrl : "http://125.75.8.170:8055",//兰州
+      //    httpsAppUrl : "https://10.210.202.242:8055",
+      //httpsAppUrl : "https://10.123.192.11:8055",
+      //    httpsAppUrl : "https://10.253.114.9:8055",
+      //apatch文件服务地址端口
+      //    apatchUrl : "http://19.15.54.121:8080",
+      //    apatchUrl : "http://120.77.17.30:8080",
+      //    apatchUrl : "http://19.16.40.244 :8080",
+      //    apatchUrl : "http://192.168.7.42:8080",  //RW
+      // apatchUrl: 'https://192.168.1.80:8080', //YX 
+      apatchUrl: 'http://192.168.3.146:8080',
+      //    apatchUrl : "https://218.17.84.149:10374", //深圳
+      //    apatchUrl : "http://125.75.8.170:8080", //兰州
+      //    apatchUrl : "http://10.210.202.242:8080",
+      //    apatchUrl : "http://10.123.192.11:8080",
+      //    apatchUrl : "https://10.253.114.9:8080", //sz 内网
+      //文件上传地址
+      //    upLoadFilePath : "C:/Program Files/EMT/Document/", //ali
+      //    upLoadFilePath : "D:/Program Files/EMT/Document/",
+      upLoadFilePath: 'E:/Program Files/EMT/Document/',
+      //    upLoadFilePath : "D:/EMT/Document",
+      //app指挥端 后端服务地址
+      //    serviceUrl : "https://192.168.7.14:8081",
+      //    serviceUrl : "https://218.17.84.149:10375", //深圳
+      serviceUrl: 'http://192.168.1.14:8081', //本地
+      //    serviceUrl : "http://19.15.54.121:8081",
+      //    serviceUrl : "http://120.77.17.30:8081",
+      //    serviceUrl : "http://19.16.40.244:8081",
+      //    serviceUrl : "https://10.253.114.9:10375",
+      //    serviceUrl : "http://10.10.102.7:8081",
+      //    serviceUrl : "http://125.75.8.170:8081",//兰州
+      // User 
+      iId: '',
+      username: '',
+      nickname: '',
+      // Event
+      eventId: '',
+      currentTab: 0,
+
+      api
+    };
+  }
+</script>

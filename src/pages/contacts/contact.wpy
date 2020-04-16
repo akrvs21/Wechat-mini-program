@@ -1,0 +1,181 @@
+<style>
+	/* .image-wrap {
+	        background: #f1f1f1;
+	        width: 100%;
+	        height: 12.5rem;
+	        display: flex;
+	        justify-content: center;
+	        flex-direction: column;
+	        align-items: center;
+	    }
+	    .image-wrap>image {
+	        width: 4.6875rem;
+	        height: 4.6875rem;
+	    }
+	    .image-wrap>text {
+	        margin-top: 1.125rem;
+	        font-size: 1.75rem;
+	        font-weight: bold;
+	    }
+	    .content-wrap {
+	        background: rgba(0, 0, 0, .01);
+	    }
+	    .content-list {
+	        border-top: 1px solid #ccc;
+	        box-sizing: border-box;
+	    }
+	    .content-list>view {
+	        text-decoration: none;
+	        color: #000;
+	        min-height: 1.25rem;
+	        display: flex;
+	        justify-content: space-between;
+	        padding: 0.625rem;
+	        align-items: center;
+	    }
+	    .content-list>view>text {
+	        font-size: 25px;
+	        font-weight: bold;
+	    }
+	    .content-list>view>text>view {
+	        font-size: 18px;
+	    }
+	    .content_div>text:nth-child(1) {
+	        letter-spacing: .5px;
+	    }
+	    .content_div>nth:nth-child(2) {
+	        color: #999;
+	        font-size: 13px;
+	    } */
+	view,
+	image,
+	text,
+	a {
+		margin: 0;
+		padding: 0;
+	}
+	body {
+		font-family: "KaiTi";
+	}
+	.Img_wrap {
+		background: #f1f1f1;
+		width: 100%;
+		height: 12.5rem;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		align-items: center;
+	}
+	.Img_wrap>image {
+		width: 4.6875rem;
+		height: 4.6875rem;
+	}
+	.Img_wrap>text {
+		margin-top: 1.125rem;
+		font-size: 1.75rem;
+		font-weight: bold;
+	}
+	.content_wrap {
+		background: rgba(0, 0, 0, .01);
+	}
+	.content_ul {
+		border-top: 1px solid #ccc;
+		box-sizing: border-box;
+	}
+	.content_ul>view {
+		text-decoration: none;
+		color: #000;
+		min-height: 1.25rem;
+		display: flex;
+		justify-content: space-between;
+		padding: 0.625rem;
+		align-items: center;
+	}
+	.content_ul>view>text {
+		font-size: 25px;
+		font-weight: bold;
+	}
+	.content_ul>view>text>view {
+		font-size: 18px;
+	}
+	.content_div>text:nth-child(1) {
+		letter-spacing: .5px;
+		/* display: block; */
+	}
+	.content_div>text:nth-child(2) {
+		color: #999;
+		font-size: 13px;
+		display: block;
+	}
+	/* .content_ul */
+</style>
+
+<template>
+	<view id="app" v-cloak>
+		<view class="Img_wrap">
+			<image src="/images/lian.png" alt=""></image>
+			<text> Name </text>
+		</view>
+		<view class="content_wrap">
+			<view class="content_ul" style="border: 0;">
+				<view>
+					<text>单位:<view></view></text>
+				</view>
+				<view>
+					<text>职务:<view></view></text>
+				</view>
+			</view>
+			<view class="content_ul">
+				<view class="skip">
+					<view class="content_div">
+						<text>+86 155........</text>
+						<text>手机号码</text>
+					</view>
+					<image src="/images/phone.png" style="width: 35px; height: 35px;"></image>
+				</view>
+				<view class="skip">
+					<view class="content_div">
+						<text>020-123456</text>
+						<text>办公电话</text>
+					</view>
+					<image src="/images/phone.png" style="width: 35px; height: 35px;"></image>
+				</view>
+			</view>
+			<view class="content_ul">
+				<view class="skip">
+					<view class="content_div">
+						<text>+86 155........</text>
+						<text>备用号码</text>
+					</view>
+					<image src="/images/phone.png" style="width: 35px; height: 35px;"></image>
+				</view>
+				<view class="skip">
+					<view class="content_div">
+						<text>020-123456</text>
+						<text>家庭号码</text>
+					</view>
+					<image src="/images/phone.png" style="width: 35px; height: 35px;"></image>
+				</view>
+			</view>
+			<view class="content_ul">
+				<view class="skip">
+					<view class="content_div">
+						<text>111111111111111</text>
+						<text>传真号码</text>
+					</view>
+					<image src="/images/phone.png" style="width: 35px; height: 35px;"></image>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import wepy from 'wepy'
+	export default class Contact extends wepy.page {
+		config = {
+			"enablePullDownRefresh": true,
+			"navigationBarTitleText": "通讯录",
+		};
+	}
+</script>
