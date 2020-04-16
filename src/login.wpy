@@ -77,12 +77,8 @@
 </style>
 
 <template>
-  <!-- <image src="images/login.jpg" class="img">
-                                                                      </image> -->
+
   <view class="container">
-    <!-- <view class="login-icon">  
-                                              <image class="login-img" src="/images/user.jpg"></image>  
-                                           </view>   -->
     <view class="login-from">
       <form bindsubmit="formSubmit" class='form'>
         <view class="{{ errorClass ? 'err' : 'myno' }}">
@@ -158,12 +154,9 @@
         console.log('onLoad <if> statement')
         console.log(this.isFlag)
       }
-      // wx.setStorageSync(   '1',   '2018/10/25')
-      // wx.setStorage({  key: "name",  data: "xiaoming"  })
     }
 
     tokenLogin() {
-        // var that = this
         wepy.request({
           url: appUrl + '/user/token', //开发者服务器接口地址",
           data: {
@@ -253,7 +246,7 @@
               }
               let id = res.data.data.operator.iId;
               wepy.$instance.globalData.iId = id;
-              wepy.$instance.globalData.username = res.data.data.operator.vcName//this.username
+              wepy.$instance.globalData.username = res.data.data.operator.vcName //this.username
               wepy.$instance.globalData.nickname = res.data.data.operator.vcDisplayname
               // console.log('the username is ' + this.username)
               console.log('the id is:' + wepy.$instance.globalData.iId)
@@ -281,7 +274,6 @@
       console.log(this.isFlag);
       console.log(this._psw);
       console.log(this.username);
-      // console.log("app后台IP：============" + appUrl);
       var password;
       password = hexMD5.hexMD5(this._psw);
       console.log("md5加密后的密码为：============" + password);
@@ -309,31 +301,10 @@
           } else if (res.data.errorCode == 10000) {
             login.failed();
           } else if (res.data.errorCode == 10009) {
-            // var date = new Date();
-            // var min = date.getMinutes();
-            // date.setMinutes(min + 5);
-            // console.log(format.Format(date, "yyyy-MM-dd HH:mm"));
-            // message.showMessage ('错误', '密码错误五次，请' + format.Format(date, "yyyy-MM-dd HH:mm") + '后在登录')
             login.failed();
           } else if (res.data.errorCode == 10012) {
             message.showMessage('错误', '您的身份证尚未录入系统，请登录后台管理系统，完善身份证信息后再登录!')
           } else if (res.data.errorCode == 0) {
-            // if (res.data.data.token != null && res.data.data.token != "") {
-            //   wepy.setStorage({
-            //     key: 'currentUser_token',
-            //     value: res.data.data.token
-            //   });
-            //   console.log("token=========" + res.data.data.token);
-            // }
-            // if (res.data.data.conferences != null && res.data.data.conferences != "") {
-            //   var conferencesName = res.data.data.conferences.vcUserName;
-            //   var conferencesPwd = res.data.data.conferences.vcUserPwd;
-            //   console.log("conferencesPwd:========" + conferencesPwd);
-            //   var conferencesServerAddress = res.data.data.conferences.vcServerAddress;
-            //   var conferencesServerPort = res.data.data.conferences.iServerPort;
-            // }
-            // login.login1(res.data.data.operator.iId, res.data.data.operator.vcName, this._psw, res.data.data.operator.vcMobile, conferencesName,
-            //   conferencesPwd, conferencesServerAddress, conferencesServerPort);
             let id = res.data.data.operator.iId;
             wepy.$instance.globalData.iId = id;
             wepy.$instance.globalData.username = this.username
@@ -345,15 +316,11 @@
                 page.onLoad();
               }
             });
-            // login1.saveLocalMessage(username, pwd);
-            // login1.saveIdentityLocalMessage(identityIsChecked);
-            //                login1.login1(18, 'lhs', '123456');
           }
         },
         fail: () => {
           console.log("无法连接到服务器!");
         }
-        // complete: () => {}
       });
     }
   }

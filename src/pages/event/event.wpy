@@ -99,23 +99,15 @@
 
 <script>
   import wepy from 'wepy';
-  import {
-    ECApplication
-  } from '../../main/ECApp';
-  // import mui from '../../lib/mui.js';
-  // import muimin from '../../lib/mui.min.js';
-  // import sockjs from '../../lib/sockjs.min.js';
-  import stomp from '../../lib/stomp.min.js';
+  // import stomp from '../../lib/stomp.min.js';
   import hexMD5 from '../../utils/MD5.js';
-  import eventList from '../../utils/eventList.js'
+ 
   // 服务器请求地址端口
   var appUrl = wepy.$instance.globalData.appUrl;
   // 服务器socket地址端口
   var appSocket = wepy.$instance.globalData.appSocket;
   //指挥端地址端口
   var appServiceUrl = wepy.$instance.globalData.serviceUrl;
-  // var userId = wepy.$instance.globalData.iId;
-  // var userId = '';
   var vcName = wepy.$instance.globalData.vcName;
   var vcPassword = wepy.$instance.globalData.vcPassword;
   var stompClient;
@@ -147,7 +139,6 @@
           this.incidents = res.data.data;
           this.$apply()
           // console.log(this.incidents);
-          // console.log('this is from getAlleventsByUserId func ' + this.userId)
         },
         fail: () => {},
         complete: () => {}
@@ -155,17 +146,6 @@
     }
     /** Go to details */
     goToDetails(e) {
-      // wepy.navigateTo({
-      //   url: './eventDetail'
-      // });
-      // console.log(e);
-      // console.log(this.$parent.globalData.appUrl)
-      // console.log(appUrl)
-      // console.log(appSocket)
-      // console.log(appServiceUrl)
-      // console.log(userId)
-      // console.log(vcName)
-      // console.log(vcPassword)
       eventId = e.currentTarget.dataset.eventid
       eventLon = e.currentTarget.dataset.eventlon
       eventLat = e.currentTarget.dataset.eventlat
@@ -196,7 +176,6 @@
         fail: () => {},
         complete: () => {}
       });
-      // eventList.detail(eventId, eventLon, eventLat);
     }
     //事件信息Websock
     // initWebsock() {
@@ -314,12 +293,8 @@
     // }
     /*******连接指挥端socket  end*************/
     onLoad() {
-      // console.log(ECApplication)
-      // console.log(wepy)
-      // console.log(eventList)
       this.userId = wepy.$instance.globalData.iId
       this.getAllEventsByUserId()
-      // console.log('this is onLoad in event.wpy ' + this.userId)
     }
   }
 </script>

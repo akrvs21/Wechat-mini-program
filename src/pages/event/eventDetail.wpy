@@ -196,18 +196,10 @@
                     console.log(res)
                 }
             })
-            // wepy.uploadFile({
-            //   url: url, // 下载资源的 url
-            //   success: res => {
-            //       console.log(res)
-            //   },
-            //   fail: () => {},
-            //   complete: () => {}
-            // });
             console.log(url)
         }
         showAttachments(e) {
-            console.log('this is showAttachments')
+            console.log('from showAttachments')
             console.log(this.showAtt)
             this.showAtt = !this.showAtt
             console.log(this.showAtt)

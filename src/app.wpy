@@ -5,7 +5,6 @@
 
 <script>
   import wepy from 'wepy';
-  // const query = require('./utils/utils.js')
   const api = require('./utils/api')
 
   export default class extends wepy.app {
@@ -13,18 +12,14 @@
       pages: [
         'login',
         'pages/board/board',
-        
-        
         'pages/user/user',
         'pages/user/me',
         'pages/video/video',
         'pages/event/event',
         'pages/event/eventDetail',
-        
         'pages/contacts/contactList',
         'pages/contacts/contact',
         'components/moveverify/moveverify',
-        'pages/event/downloadList',
       ],
       window: {
         backgroundTextStyle: 'light',

@@ -1,16 +1,13 @@
 <style lang="less">
     @import '../../css/mui.wxss';
     page {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
+        width: 100%;
+        bottom: 0;
+        top: 20rpx;
+        position: absolute; // display: flex;
+        // flex-direction: column;
+        // height: 100%;
     }
-    /* .main {
-                        display: flex;
-                        flex-direction: column;
-                        height: 100%;
-                        padding-top: 2.1875px;
-                    } */
     .navbar {
         flex: none;
         display: flex;
@@ -56,7 +53,7 @@
         font-size: 30rpx;
         color: #908df5;
     }
-    #segmentedControl {
+    .segmentedControl {
         position: fixed;
         top: 0;
         left: 0;
@@ -71,33 +68,14 @@
     }
     .section-date {
         flex: 1;
-        /* background-color: rgb(78, 195, 235); */
-        /* height: 10rpx; */
         font-size: 15px;
         text-align: center;
         border: 1px solid #999;
-    } // .wrapper {
-    //     height: 100%;                                                                                                                        // margin-left:auto;
-    //                                                                                                                             // margin-right:auto;
-    //                                                                                                                             // height:auto; 
-    //                                                                                                                             // width:auto;
-    //                                                                                                                         } 
-    /* .info {
-                                                                                                                                                float: left;
-                                                                                                                                            } */
+    }
     .parent {
         display: flex;
         background-color: rgb(183, 202, 209);
-        /* float: left;
-                                                                                                                                                clear: left; */
     }
-    // .main {
-    //         width: 100%;
-    // bottom: 0;
-    // top: 20rpx;
-    // /* background-color: red; */
-    // position: absolute;
-    // }
 </style>
 
 <template>
@@ -109,12 +87,13 @@
         <swiper class="swiper" current="{{ currentTab}}" duration="200" bindchange="swiperChange">
             <swiper-item class="wrapper">
                 <view class="info">
-                    <view id="segmentedControl" class="mui-segmented-control">
+                    <view class="mui-segmented-control segmentedControl">
                         <navigator class="mui-control-item {{ showToday ? 'mui-active' : '' }} " bindtap="todayEvent">今日事件</navigator>
                         <navigator class="mui-control-item {{ showEvent ? 'mui-active' : '' }} " bindtap="subEvent">关注事件</navigator>
                         <navigator class="mui-control-item {{ showReport ? 'mui-active' : '' }}" bindtap="todayReport">今日报导</navigator>
                     </view>
                 </view>
+                <!-- 今日事件 -->
                 <view hidden="{{ !isToday }}">
                     <view class="parent">
                         <view class="section-event">
@@ -132,25 +111,24 @@
                             </picker>
                         </view>
                     </view>
-                    <!-- <text> 今日事件 </text> -->
-                    <view class="main" >
+                    <view class="main">
                         <block wx:for="{{todayEventsList}}">
                             <view class="mui-table-view mui-table-view-striped mui-table-view-condensed">
                                 <view class="mui-table-view-cell">
                                     <view class="mui-table">
                                         <view class="mui-table-cell mui-col-xs-10">
-                                            <view>
+                                            <view catchtap="eventDetail" data-eventId="{{item.i_id}}" data-eventLon="{{item.d_longitude}}" data-eventLat="{{item.d_latitude}}">
                                                 <text class="mui-ellipsis" style="font-weight: normal; font-size: 1.0625">
-                    												{{item.vc_title}}</text>
+                                                    												{{item.vc_title}}</text>
                                                 <text class="mui-h6 mui-ellipsis" style="display: block;">
-                    												{{item.txt_report_description}}</text>
+                                                    												{{item.txt_report_description}}</text>
                                                 <text class="mui-h6 mui-ellipsis">
-                    												{{item.dt_occur_time}}</text>
+                                                    												{{item.dt_occur_time}}</text>
                                             </view>
-                                            <button wx:if="{{item.attention=='false'}}" class="mui-btn  mui-pull-right">未关注
-                    										</button>
-                                            <button wx:if="{{item.attention=='true'}}" class="mui-btn mui-pull-right" style="background-color: #007AFF;color: white;">已关注
-                    										</button>
+                                            <button wx:if="{{item.attention=='false'}}" class="mui-btn  mui-pull-right" catchtap="toggleSub" data-subType="1102" data-eventId="{{item.i_id}}">未关注
+                                                    										</button>
+                                            <button wx:if="{{item.attention=='true'}}" class="mui-btn mui-pull-right" catchtap="toggleSub" data-subType="1002" data-eventId="{{item.i_id}}" style="background-color: #007AFF;color: white;">已关注
+                                                    										</button>
                                         </view>
                                     </view>
                                 </view>
@@ -158,13 +136,88 @@
                         </block>
                     </view>
                 </view>
+                <!-- 关注事件 -->
                 <view hidden="{{ !isEvent }}">
-                    <text>关注事件</text>
+                    <view class="main">
+                        <block wx:for="{{subEventsList}}">
+                            <view class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+                                <view class="mui-table-view-cell">
+                                    <view class="mui-table">
+                                        <view class="mui-table-cell mui-col-xs-10">
+                                            <view catchtap="eventDetail" data-eventId="{{item.iId}}" data-eventLon="{{item.dLongitude}}" data-eventLat="{{item.dLatitude}}">
+                                                <text class="mui-ellipsis" style="font-weight: normal; font-size: 1.0625">
+                                                    												{{item.vcTitle}}</text>
+                                                <text class="mui-h6 mui-ellipsis" style="display: block;">
+                                                    												{{item.txtReportDescription}}</text>
+                                                <text class="mui-h6 mui-ellipsis">
+                                                    												{{item.dtOccurTime}}</text>
+                                            </view>
+                                            <button class="mui-btn mui-pull-right" catchtap="toggleSub" data-subType="1002" data-eventId="{{item.iId}}" style="background-color: #007AFF;color: white;">已关注
+                                                    										</button>
+                                        </view>
+                                    </view>
+                                </view>
+                            </view>
+                        </block>
+                    </view>
                 </view>
+                <!-- 今日报道 -->
                 <view hidden="{{ !isReport }}">
-                    <text>今日报导</text>
+                    <view class="mui-control-content">
+                        <view wx:for="{{eventAlertList}}" class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+                            <!--事件快报-->
+                            <view wx:if="{{item.dictionaryVcCode=='eventbullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
+                                <view class="mui-table">
+                                    <view class="mui-table-cell mui-col-xs-10">
+                                        <!--该盒子用于跳转-->
+                                        <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
+        										{{item.vc_big_title}}</text>
+                                        <text class="mui-h6">{{item.vc_title}}</text>
+                                        <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.vc_sign_time}}</text>
+                                    </view>
+                                </view>
+                            </view>
+                            <!--每日一报-->
+                            <view wx:if="{{item.dictionaryVcCode=='daybullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
+                                <view class="mui-table">
+                                    <view class="mui-table-cell mui-col-xs-10">
+                                        <!--该盒子用于跳转-->
+                                        <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
+        										{{item.dictionaryVcName}}</text>
+                                        <text class="mui-h6">期号：{{item.vc_number}}</text>
+                                        <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.dt_time}}</text>
+                                    </view>
+                                </view>
+                            </view>
+                            <!--每周一报-->
+                            <view wx:if="{{item.dictionaryVcCode=='weekbullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
+                                <view class="mui-table">
+                                    <view class="mui-table-cell mui-col-xs-10">
+                                        <!--该盒子用于跳转-->
+                                        <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
+        										{{item.dictionaryVcName}}</text>
+                                        <text class="mui-h6">期号：{{item.vc_number}}</text>
+                                        <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.dt_time}}</text>
+                                    </view>
+                                </view>
+                            </view>
+                            <!--月报-->
+                            <view wx:if="{{item.dictionaryVcCode=='monthbullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
+                                <view class="mui-table">
+                                    <view class="mui-table-cell mui-col-xs-10">
+                                        <!--该盒子用于跳转-->
+                                        <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
+        										{{item.dictionaryVcName}}</text>
+                                        <text class="mui-h6">期号：{{item.vc_number}}</text>
+                                        <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.vc_sign_time}}</text>
+                                    </view>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
                 </view>
             </swiper-item>
+            <!-- 趋势分析 -->
             <swiper-item>
                 <view class="info">
                     <text>some info</text>
@@ -194,7 +247,9 @@
                 selectType: '',
                 eventTypeId: ''
             },
+            userId: '',
             todayEventsList: [],
+            subEventsList: [],
             showToday: true,
             isEvent: false,
             isReport: false,
@@ -215,7 +270,151 @@
             multiIndex: [0, 0],
             date: '',
         }
-        // methods = {
+        // 今日事件
+        toggleSub(e) {
+            console.log(e)
+            let eventId = e.currentTarget.dataset.eventid
+            let subType = e.currentTarget.dataset.subtype
+            console.log(eventId)
+            console.log(subType)
+            if (subType === "1002") {
+                wepy.showModal({
+                    title: '提示', //提示的标题,
+                    content: '确认取消关注?', //提示的内容,
+                    showCancel: true, //是否显示取消按钮,
+                    cancelText: '取消', //取消按钮的文字，默认为取消，最多 4 个字符,
+                    cancelColor: '#000000', //取消按钮的文字颜色,
+                    confirmText: '确定', //确定按钮的文字，默认为取消，最多 4 个字符,
+                    confirmColor: '#3CC51F', //确定按钮的文字颜色,
+                    success: res => {
+                        wx.removeStorage({
+                            key: 'subs',
+                            success(res) {
+                                wepy.showToast({
+                                    title: '成功取消关注', //提示的内容,
+                                    icon: 'success', //图标,
+                                    duration: 2000, //延迟时间,
+                                    mask: true, //显示透明蒙层，防止触摸穿透,
+                                    success: res => {}
+                                });
+                            }
+                        })
+                        wepy.request({
+                            url: appUrl + "/event/editEventAttentionType", //开发者服务器接口地址",
+                            data: {
+                                attentionType: 1,
+                                userId: this.userId,
+                                eventId: eventId
+                            }, //请求的参数",
+                            method: 'GET',
+                            dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                            success: res => {
+                                console.log('from callback in toggleSub 1')
+                                console.log(res)
+                                this.refresh()
+                                this.subEvents()
+                                console.log(this.subEventsList)
+                            },
+                            fail: () => {},
+                            complete: () => {}
+                        });
+                    }
+                });
+            } else if (subType === "1102") {
+                wepy.showModal({
+                    title: '提示', //提示的标题,
+                    content: '确认添加关注?', //提示的内容,
+                    showCancel: true, //是否显示取消按钮,
+                    cancelText: '取消', //取消按钮的文字，默认为取消，最多 4 个字符,
+                    cancelColor: '#000000', //取消按钮的文字颜色,
+                    confirmText: '确定', //确定按钮的文字，默认为取消，最多 4 个字符,
+                    confirmColor: '#3CC51F', //确定按钮的文字颜色,
+                    success: res => {
+                        wepy.request({
+                            url: appUrl + "/event/editEventAttentionType", //开发者服务器接口地址",
+                            data: {
+                                attentionType: 0,
+                                userId: this.userId,
+                                eventId: eventId
+                            }, //请求的参数",
+                            method: 'GET',
+                            dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                            success: res => {
+                                console.log('from callback in toggleSub 2')
+                                this.refresh()
+                                this.subEvents()
+                                console.log(this.subEventsList)
+                            },
+                            fail: () => {},
+                            complete: () => {}
+                        });
+                    }
+                });
+            }
+        }
+        subEvents() {
+            wepy.request({
+                url: appUrl + "/event/getAttentionEvents?userId=" + this.userId, //开发者服务器接口地址",
+                data: {}, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    console.log('from subEvents!!!!!!!!!!')
+                    console.log(res)
+                    this.subEventsList = res.data.data
+                    wx.setStorageSync('subs', res.data.data)
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+        }
+        refresh() {
+            console.log("REFRESH!")
+            wepy.request({
+                url: appUrl + "/event/getTodayEvents", //开发者服务器接口地址",
+                data: this.typeObj, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    if (res != null && res != "") {
+                        this.todayEventsList = res.data.data
+                        this.$apply()
+                    }
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+        }
+        eventDetail(e) {
+            console.log('from eventDetail')
+            console.log(e)
+            var eventId = e.currentTarget.dataset.eventid
+            var eventLon = e.currentTarget.dataset.eventlon
+            var eventLat = e.currentTarget.dataset.eventlat
+            wepy.request({
+                url: appUrl + '/event/setUnreadTofalse', //开发者服务器接口地址",
+                data: {
+                    operatorId: this.userId,
+                    eventId: eventId
+                }, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    // this.getAllEventsByUserId();
+                    wepy.$instance.globalData.eventId = eventId
+                    wepy.navigateTo({
+                        url: '../event/eventDetail',
+                        success: function() {
+                            var page = getCurrentPages().pop();
+                            if (page == undefined || page == null) return;
+                            // page.onLoad();
+                        }
+                    });
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+        }
         navbarTap(e) {
             this.currentTab = e.currentTarget.dataset.idx
             wepy.$instance.globalData.currentTab = e.currentTarget.dataset.idx;
@@ -241,6 +440,13 @@
             })
         }
         onLoad() {
+            console.log('onLoad')
+            console.log(this.subEventsList)
+            let subCache = wx.getStorageSync('subs')
+            this.subEventsList = subCache
+            console.log(subCache)
+            console.log(this.subEventsList)
+            this.userId = wepy.$instance.globalData.iId
             var t = 5;
             let today = new Date()
             let now = today.getFullYear() + '-' + (today.getMonth() < 10 ? '0' : '') + (today.getMonth() + 1) + '-' + (today.getDate() < 10 ? '0' : '') + today.getDate()

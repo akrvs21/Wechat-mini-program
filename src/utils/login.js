@@ -1,6 +1,6 @@
 import message from './toast.js'
 import format from './timeFormat.js'
-import ECApplication from '../main/ECApp.js'
+// import ECApplication from '../main/ECApp.js'
 
 var errTime = 0;
 var mUserName, mPassword, mServerUrl, mServerPort;
@@ -18,45 +18,44 @@ function failed() {
     }
 }
 
-function login1(iId, vcName, vcPassword, vcMobile, conferencesName,
-    conferencesPwd, conferencesServerAddress, conferencesServerPort) {
-    // Sinvieemt@123
-    var obj  = new ECApplication();
-    console.log('from login1')
-    console.log(obj)
-    //视频会议
-    if (conferencesName != null && conferencesName != ""
-        && conferencesPwd != null && conferencesPwd != ""
-        && conferencesServerAddress != null && conferencesServerAddress != ""
-        && conferencesServerPort != 0
-    ) {
-        obj.setmUserName(conferencesName);
-        obj.setmPassword(conferencesPwd);
-        obj.setServerUrl(conferencesServerAddress);
-        obj.setServerPort(conferencesServerPort);
-        // obj.setMac(Mac);
+// function login1(iId, vcName, vcPassword, vcMobile, conferencesName,
+//     conferencesPwd, conferencesServerAddress, conferencesServerPort) {
+//     // Sinvieemt@123
+//     var obj  = new ECApplication();
+//     console.log('from login1')
+//     console.log(obj)
+//     //视频会议
+//     if (conferencesName != null && conferencesName != ""
+//         && conferencesPwd != null && conferencesPwd != ""
+//         && conferencesServerAddress != null && conferencesServerAddress != ""
+//         && conferencesServerPort != 0
+//     ) {
+//         obj.setmUserName(conferencesName);
+//         obj.setmPassword(conferencesPwd);
+//         obj.setServerUrl(conferencesServerAddress);
+//         obj.setServerPort(conferencesServerPort);
+//         // obj.setMac(Mac);
 
-        // mUserName = conferencesName;
-        // mPassword = conferencesPwd;
-        // mServerUrl = conferencesServerAddress;
-        // mServerPort = conferencesServerPort;
-        //new Thread(runnable).start();
-    } else {
-        mUserName = obj.getmUserName();
-        mPassword = obj.getmPassword();
-        mServerUrl = obj.getServerUrl();
-        mServerPort = obj.getServerPort();
-        //new Thread(runnable).start();
-    }
+//         // mUserName = conferencesName;
+//         // mPassword = conferencesPwd;
+//         // mServerUrl = conferencesServerAddress;
+//         // mServerPort = conferencesServerPort;
+//         //new Thread(runnable).start();
+//     } else {
+//         mUserName = obj.getmUserName();
+//         mPassword = obj.getmPassword();
+//         mServerUrl = obj.getServerUrl();
+//         mServerPort = obj.getServerPort();
+//         //new Thread(runnable).start();
+//     }
 
-    obj.setiId(iId);
-    obj.setVcName(vcName);
-    obj.setVcPassword(vcPassword);
-    obj.setVcMobile(vcMobile);
-    obj.setCleanToken(0);
-}
+//     obj.setiId(iId);
+//     obj.setVcName(vcName);
+//     obj.setVcPassword(vcPassword);
+//     obj.setVcMobile(vcMobile);
+//     obj.setCleanToken(0);
+// }
 
 module.exports = {
-    failed: failed,
-    login1: login1
+    failed: failed
 }

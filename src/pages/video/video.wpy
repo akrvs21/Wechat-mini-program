@@ -120,7 +120,7 @@
 </style>
 
 <template>
-    <!-- <view> -->
+    <block>
         <!-- Navigation -->
         <view class="navbar">
             <text wx:for="{{navbar}}" data-idx="{{index}}" class="item {{currentTab==index ? 'active' : ''}}" wx:key="unique" bindtap="navbarTap">{{ item }}</text>
@@ -147,7 +147,7 @@
                 <view wx:else> <text> No data </text></view>
             </swiper-item>
         </swiper>
-        <!-- </view> -->
+        </block>
 </template>
 
 <script>
