@@ -125,7 +125,7 @@
         <view class="navbar">
             <text wx:for="{{navbar}}" data-idx="{{index}}" class="item {{currentTab==index ? 'active' : ''}}" wx:key="unique" bindtap="navbarTap">{{ item }}</text>
         </view>
-        <swiper class="swiper" current="{{ currentTab }}" duration="500" bindchange="swiperChange">
+        <swiper class="swiper" current="{{ currentTab }}" duration="600" bindchange="swiperChange">
             <swiper-item class="wrapper">
                 <view class="content_wrap" wx:if="{{ live.length != 0 }}">
                     <view class="mui-table-view">
@@ -152,7 +152,6 @@
 
 <script>
     import wepy from 'wepy'
-    const app = getApp()
     var appUrl = wepy.$instance.globalData.appUrl;
     export default class video extends wepy.page {
         config = {
@@ -167,23 +166,15 @@
             meeting: []
         }
         navbarTap(e) {
-            console.log(app)
-            this.setData({
-                currentTab: e.currentTarget.dataset.idx
-            })
-            app.globalData.currentTab = e.currentTarget.dataset.idx;
+            this.currentTab = e.currentTarget.dataset.idx
+            wepy.$instance.globalData.LiveCurrentTab = e.currentTarget.dataset.idx;
         }
         onShow() {
-            console.log(app)
-            this.setData({
-                currentTab: app.globalData.currentTab
-            })
+            this.currentTab = wepy.$instance.globalData.LiveCurrentTab
         }
         swiperChange(e) {
-            this.setData({
-                currentTab: e.detail.current,
-            })
-            app.globalData.currentTab = e.detail.current;
+            this.currentTab = e.detail.current,
+            wepy.$instance.globalData.LiveCurrentTab = e.detail.current;
         }
         loadMeetingData() {
             wepy.request({

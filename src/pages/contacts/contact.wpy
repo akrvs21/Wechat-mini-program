@@ -23,7 +23,7 @@
 		height: 4.6875rem;
 	}
 	.Img_wrap>text {
-		margin-top: 1.125rem;
+		/* margin-top: 1.125rem; */
 		font-size: 1.75rem;
 		font-weight: bold;
 	}
@@ -65,7 +65,7 @@
 <template>
 	<view id="app" v-cloak>
 		<view class="Img_wrap">
-			<image src="/images/lian.png" alt=""></image>
+			<image src="https://www.shareicon.net/data/2016/07/26/801997_user_512x512.png" alt=""></image>
 			<text> Name </text>
 		</view>
 		<view class="content_wrap">
@@ -83,14 +83,14 @@
 						<text>+86 155........</text>
 						<text>手机号码</text>
 					</view>
-					<image src="/images/phone.png" style="width: 35px; height: 35px;"></image>
+					<image src="https://library.wwu.edu/files/Icon-Phone.png" style="width: 35px; height: 35px;"></image>
 				</view>
 				<view class="skip">
 					<view class="content_div">
 						<text>020-123456</text>
 						<text>办公电话</text>
 					</view>
-					<image src="/images/phone.png" style="width: 35px; height: 35px;"></image>
+					<image src="https://library.wwu.edu/files/Icon-Phone.png" style="width: 35px; height: 35px;"></image>
 				</view>
 			</view>
 			<view class="content_ul">
@@ -99,14 +99,14 @@
 						<text>+86 155........</text>
 						<text>备用号码</text>
 					</view>
-					<image src="/images/phone.png" style="width: 35px; height: 35px;"></image>
+					<image src="https://library.wwu.edu/files/Icon-Phone.png" style="width: 35px; height: 35px;"></image>
 				</view>
 				<view class="skip">
 					<view class="content_div">
 						<text>020-123456</text>
 						<text>家庭号码</text>
 					</view>
-					<image src="/images/phone.png" style="width: 35px; height: 35px;"></image>
+					<image src="https://library.wwu.edu/files/Icon-Phone.png" style="width: 35px; height: 35px;"></image>
 				</view>
 			</view>
 			<view class="content_ul">
@@ -115,7 +115,7 @@
 						<text>111111111111111</text>
 						<text>传真号码</text>
 					</view>
-					<image src="/images/phone.png" style="width: 35px; height: 35px;"></image>
+					<image src="https://library.wwu.edu/files/Icon-Phone.png" style="width: 35px; height: 35px;"></image>
 				</view>
 			</view>
 		</view>

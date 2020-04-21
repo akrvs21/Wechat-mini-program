@@ -77,14 +77,13 @@
 </style>
 
 <template>
-
   <view class="container">
     <view class="login-from">
-      <form bindsubmit="formSubmit" class='form'>
+      <form class='form'>
         <view class="{{ errorClass ? 'err' : 'myno' }}">
           <!-- username -->
           <view style="padding: 4px;" class="weui-cell weui-cell_input">
-            <image class="nameImage" src="/images/icon1.png"></image>
+            <image class="nameImage" src="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-512.png"></image>
             <view class="weui-cell__hd">
               <view style="width: 60px;" class="weui-label">账号</view>
             </view>
@@ -96,7 +95,7 @@
         <view class="{{ errorClass ? 'err' : 'mypwd' }}">
           <!-- password -->
           <view style="padding: 4px;" class="weui-cell weui-cell_input">
-            <image class="nameImage" src="/images/key.png"></image>
+            <image class="nameImage" src="https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_password-256.png"></image>
             <view class="weui-cell__hd">
               <view style="width: 60px;" class="weui-label">密码</view>
             </view>
@@ -107,11 +106,11 @@
         </view>
         <!--Button-->
         <view class="loginBtnView">
-          <button class="loginBtn" form-type='submit' bindtap='loginWithName'>用户名登录</button>
+          <button class="loginBtn" form-type='submit' catchtap='loginWithName'>用户名登录</button>
         </view>
         <!--Button-->
         <view class="loginBtnView">
-          <button class="loginBtn" form-type='submit' bindtap='loginWithMobile'>手机号登录</button>
+          <button class="loginBtn" form-type='submit' catchtap='loginWithMobile'>手机号登录</button>
         </view>
         <!--Button-->
         <view class="loginBtnView">

@@ -38,7 +38,7 @@
 <template>
   <navigator class="weui-cell  weui-cell_access weui-cell_example" url="/pages/user/user">
     <view class="weui-cell__hd">
-      <image src="/images/user.jpg" style="width: 100rpx; height: 100rpx; margin-right: 16px; display: block;"></image>
+      <image src="https://img.icons8.com/ios/1600/user-male-circle-filled.png" style="width: 100rpx; height: 100rpx; margin-right: 16px; display: block;"></image>
     </view>
     <view class="weui-cell__bd">
       <text>{{ user }}</text>

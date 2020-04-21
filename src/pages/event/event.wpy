@@ -101,7 +101,8 @@
   import wepy from 'wepy';
   // import stomp from '../../lib/stomp.min.js';
   import hexMD5 from '../../utils/MD5.js';
- 
+  var api = wepy.$instance.globalData.api
+
   // 服务器请求地址端口
   var appUrl = wepy.$instance.globalData.appUrl;
   // 服务器socket地址端口
@@ -177,124 +178,11 @@
         complete: () => {}
       });
     }
-    //事件信息Websock
-    // initWebsock() {
-    //   console.log("指挥端socke正在连接！");
-    //   console.log(appServiceUrl);
-    //   var sock = new SockJS(appServiceUrl + '/websocket'); // 建立连接对象（还未发起连接）
-    //   stompClient = Stomp.over(sock); // 获取 STOMP 子协议的客户端对象
-    //   // 向服务器发起websocket连接并发送CONNECT帧
-    //   stompClient.connect({
-    //       userId: userId,
-    //     },
-    //     function connectCallback(frame) {
-    //       // 连接成功时（服务器响应 CONNECTED 帧）的回调方法
-    //       console.log("连接成功，frame = " + frame);
-    //       stompClient.subscribe('/topic/app/event', function(response) {
-    //         console.log("下发事件的websoket");
-    //         var resJson = JSON.parse(response.body);
-    //         var type = resJson.type;
-    //         switch (type) {
-    //           case "event":
-    //             if (resJson.data.userId == userId) {
-    //               var data = resJson.data;
-    //               console.log("收到事件，事件id：=======" + resJson.data.eventId);
-    //               //刷新事件
-    //               getAllEventsByUserId();
-    //               //创建通知 ne zakonchena 
-    //               // eventList.notification(resJson.data.eventId,
-    //               //   resJson.data.lon,
-    //               //   resJson.data.lat,
-    //               //   resJson.data.title,
-    //               //   resJson.data.detail); 
-    //             }
-    //             break;
-    //           default:
-    //             break;
-    //         }
-    //       });
-    //       stompClient.subscribe('/topic/app/feedback', function(response) {
-    //         console.log("下发指令的websoket");
-    //         var resJson = JSON.parse(response.body);
-    //         if (resJson.receiveId == userId) {
-    //           resJson.txtContent = resJson.content;
-    //           resJson.dtTime = resJson.time;
-    //           resJson.vcCode = "feedbackText";
-    //           console.log(resJson.txtContent);
-    //           console.log(resJson.eventLon);
-    //           console.log(resJson.event);
-    //           console.log(resJson.eventLat);
-    //           console.log(resJson.eventId);
-    //           // ne zakonchena
-    //           // eventList.notification(resJson.eventId, resJson.event, resJson.eventLon, resJson.eventLat);
-    //           // eventList.notification(resJson.data.eventId,
-    //           //    resJson.data.lon,
-    //           //    resJson.data.lat,
-    //           //    resJson.data.title,
-    //           //    resJson.data.detail);
-    //         }
-    //       });
-    //     },
-    //     function errorCallBack(error) {
-    //       console.log("连接失败"); // 连接失败时（服务器响应 ERROR 帧）的回调方法
-    //       reconnect();
-    //     }
-    //   );
-    //   stompClient.ws.onclose = function() {
-    //     console.log("关闭连接");
-    //     reconnect(); //重连
-    //   }
-    // }
-    // reconnect() {
-    //   if (lockReconnect) {
-    //     return
-    //   };
-    //   lockReconnect = true;
-    //   console.log("reconnect::" + appServiceUrl);
-    //   //没连接上会一直重连，设置延迟避免请求过多
-    //   setTimeout(function() {
-    //     wepy.request({
-    //       url: appServiceUrl + "/login", //开发者服务器接口地址",
-    //       data: {
-    //         username: "user",
-    //         password: hexMD5.Md5Decode("Sinvieemt@123")
-    //       }, //请求的参数",
-    //       method: 'POST',
-    //       dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
-    //       success: res => {
-    //         console.log(JSON.stringify(data));
-    //         console.log("正在重连，当前时间" + new Date());
-    //         initWebsock(); //初始化事件信息、次生事件websocket
-    //         //刷新事件
-    //         getAllEventsByUserId();
-    //         lockReconnect = false;
-    //         wepy.request({
-    //           url: "https://218.17.84.149:10375" + "/emergency/preparation/dbTeam/search", //开发者服务器接口地址",
-    //           data: {
-    //             range: "3000"
-    //           }, //请求的参数",
-    //           method: 'POST',
-    //           dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
-    //           success: res => {
-    //             console.log(JSON.stringify(res));
-    //           },
-    //           fail: () => {},
-    //           complete: () => {}
-    //         });
-    //       },
-    //       fail: () => {
-    //         console.log("指挥端websocket登录失败！");
-    //         lockReconnect = false;
-    //         reconnect();
-    //       },
-    //       complete: () => {}
-    //     });
-    //   }, 5000); //这里设置重连间隔(ms)
-    // }
-    /*******连接指挥端socket  end*************/
+   
     onLoad() {
       this.userId = wepy.$instance.globalData.iId
       this.getAllEventsByUserId()
+    
     }
   }
 </script>

@@ -1,6 +1,6 @@
 <style>
   @import 'css/weui.wxss';
-  @import 'css/font-awesome.wxss';
+  /* @import 'css/font-awesome.wxss'; */
 </style>
 
 <script>
@@ -12,14 +12,25 @@
       pages: [
         'login',
         'pages/board/board',
-        'pages/user/user',
-        'pages/user/me',
+        
+        
+        'pages/test',
+        
         'pages/video/video',
+        
+        'pages/user/me',
+        'pages/contacts/contactList',
+        
+        
+        'pages/user/user',
+        
+        
         'pages/event/event',
         'pages/event/eventDetail',
-        'pages/contacts/contactList',
+        
         'pages/contacts/contact',
         'components/moveverify/moveverify',
+        'components/ec-canvas/ec-canvas'
       ],
       window: {
         backgroundTextStyle: 'light',
@@ -152,8 +163,15 @@
       // Event
       eventId: '',
       currentTab: 0,
+      LiveCurrentTab: 0,
+      totalEventsType: {},
+      lastSixMonth: {},
+      areaEvents: {},
+      riskEvents: {},
+      areaRiskEvents: {},
 
-      api
+      api,
+      vcId: ''
     };
   }
 </script>

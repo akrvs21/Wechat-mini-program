@@ -1,12 +1,16 @@
 <style lang="less">
     @import '../../css/mui.wxss';
     page {
-        width: 100%;
-        bottom: 0;
-        top: 20rpx;
-        position: absolute; // display: flex;
+        // width: 100%;
+        // bottom: 0;
+        // top: 20rpx;
+        // position: absolute; // display: flex;
+        // height: 100%;
         // flex-direction: column;
         // height: 100%;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
     .navbar {
         flex: none;
@@ -35,11 +39,13 @@
         background: #908df5;
     }
     .swiper {
-        height: 100%;
+        height: 100%; // height: 100vh;
+        // overflow: auto;
+        // transition: all .5s
     }
     .info {
         display: flex;
-        height: 93rpx;
+        height: 81rpx;
         justify-content: center;
         align-items: center;
         flex-direction: column;
@@ -76,6 +82,18 @@
         display: flex;
         background-color: rgb(183, 202, 209);
     }
+    .chart {
+        // height: 200px;
+        // margin: 0px;
+        // padding: 0px;
+        width: 700rpx;
+        height: 600rpx;
+        margin: 0 auto;
+    } // .content_wrap {
+    //     height: 100vh;
+    //     overflow: auto;
+    //     transition: all .5s;
+    // }
 </style>
 
 <template>
@@ -84,145 +102,191 @@
         <view class="navbar">
             <text wx:for="{{navbar}}" data-idx="{{index}}" class="item {{currentTab==index ? 'active' : ''}}" wx:key="unique" bindtap="navbarTap">{{ item }}</text>
         </view>
-        <swiper class="swiper" current="{{ currentTab}}" duration="200" bindchange="swiperChange">
+        <swiper class="swiper" current="{{ currentTab}}" duration="600" bindchange="swiperChange">
+            <!-- <scroll-view scroll-y> -->
             <swiper-item class="wrapper">
-                <view class="info">
-                    <view class="mui-segmented-control segmentedControl">
-                        <navigator class="mui-control-item {{ showToday ? 'mui-active' : '' }} " bindtap="todayEvent">今日事件</navigator>
-                        <navigator class="mui-control-item {{ showEvent ? 'mui-active' : '' }} " bindtap="subEvent">关注事件</navigator>
-                        <navigator class="mui-control-item {{ showReport ? 'mui-active' : '' }}" bindtap="todayReport">今日报导</navigator>
-                    </view>
-                </view>
-                <!-- 今日事件 -->
-                <view hidden="{{ !isToday }}">
-                    <view class="parent">
-                        <view class="section-event">
-                            <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
-                                <view class="picker">
-                                    {{multiArray[1][multiIndex[1]]}}
-                                </view>
-                            </picker>
-                        </view>
-                        <view class="section-date">
-                            <picker mode="date" value="{{date}}" start="2015-01-01" end="2025-12-31" bindchange="bindDateChange">
-                                <view class="picker">
-                                    {{date}}
-                                </view>
-                            </picker>
+                <scroll-view scroll-y style="display: inline">
+                    <view class="info">
+                        <view class="mui-segmented-control segmentedControl">
+                            <view class="mui-control-item {{ showToday ? 'mui-active' : '' }} " bindtap="todayEvent">今日事件</view>
+                            <view class="mui-control-item {{ showEvent ? 'mui-active' : '' }} " bindtap="subEvent">关注事件</view>
+                            <view class="mui-control-item {{ showReport ? 'mui-active' : '' }}" bindtap="todayReport">今日报导</view>
                         </view>
                     </view>
-                    <view class="main">
-                        <block wx:for="{{todayEventsList}}">
-                            <view class="mui-table-view mui-table-view-striped mui-table-view-condensed">
-                                <view class="mui-table-view-cell">
+                    <!-- 今日事件 -->
+                    <view hidden="{{ !isToday }}">
+                        <view class="parent">
+                            <view class="section-event">
+                                <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
+                                    <view class="picker">
+                                        {{multiArray[1][multiIndex[1]]}}
+                                    </view>
+                                </picker>
+                            </view>
+                            <view class="section-date">
+                                <picker mode="date" value="{{date}}" start="2015-01-01" end="2025-12-31" bindchange="bindDateChange">
+                                    <view class="picker">
+                                        {{date}}
+                                    </view>
+                                </picker>
+                            </view>
+                        </view>
+                        <view class="main">
+                            <block wx:for="{{todayEventsList}}">
+                                <view class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+                                    <view class="mui-table-view-cell">
+                                        <view class="mui-table">
+                                            <view class="mui-table-cell mui-col-xs-10">
+                                                <view catchtap="eventDetail" data-eventId="{{item.i_id}}" data-eventLon="{{item.d_longitude}}" data-eventLat="{{item.d_latitude}}">
+                                                    <text class="mui-ellipsis" style="font-weight: normal; font-size: 1.0625">
+                                                                                                                                                                            												{{item.vc_title}}</text>
+                                                    <text class="mui-h6 mui-ellipsis" style="display: block;">
+                                                                                                                                                                            												{{item.txt_report_description}}</text>
+                                                    <text class="mui-h6 mui-ellipsis">
+                                                                                                                                                                            												{{item.dt_occur_time}}</text>
+                                                </view>
+                                                <button wx:if="{{item.attention=='false'}}" class="mui-btn  mui-pull-right" catchtap="toggleSub" data-subType="1102" data-eventId="{{item.i_id}}">未关注
+                                                                                                                                                                            										</button>
+                                                <button wx:if="{{item.attention=='true'}}" class="mui-btn mui-pull-right" catchtap="toggleSub" data-subType="1002" data-eventId="{{item.i_id}}" style="background-color: #007AFF;color: white;">已关注
+                                                                                                                                                                            										</button>
+                                            </view>
+                                        </view>
+                                    </view>
+                                </view>
+                            </block>
+                        </view>
+                    </view>
+                    <!-- 关注事件 -->
+                    <view hidden="{{ !isEvent }}">
+                        <view class="main">
+                            <block wx:for="{{subEventsList}}">
+                                <view class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+                                    <view class="mui-table-view-cell">
+                                        <view class="mui-table">
+                                            <view class="mui-table-cell mui-col-xs-10">
+                                                <view catchtap="eventDetail" data-eventId="{{item.iId}}" data-eventLon="{{item.dLongitude}}" data-eventLat="{{item.dLatitude}}">
+                                                    <text class="mui-ellipsis" style="font-weight: normal; font-size: 1.0625">
+                                                                                                                                                                            												{{item.vcTitle}}</text>
+                                                    <text class="mui-h6 mui-ellipsis" style="display: block;">
+                                                                                                                                                                            												{{item.txtReportDescription}}</text>
+                                                    <text class="mui-h6 mui-ellipsis">
+                                                                                                                                                                            												{{item.dtOccurTime}}</text>
+                                                </view>
+                                                <button class="mui-btn mui-pull-right" catchtap="toggleSub" data-subType="1002" data-eventId="{{item.iId}}" style="background-color: #007AFF;color: white;">已关注
+                                                                                                                                                                            										</button>
+                                            </view>
+                                        </view>
+                                    </view>
+                                </view>
+                            </block>
+                        </view>
+                    </view>
+                    <!-- 今日报道 -->
+                    <view hidden="{{ !isReport }}">
+                        <view class="mui-control-content">
+                            <view wx:for="{{eventAlertList}}" class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+                                <!--事件快报-->
+                                <view wx:if="{{item.dictionaryVcCode=='eventbullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
                                     <view class="mui-table">
                                         <view class="mui-table-cell mui-col-xs-10">
-                                            <view catchtap="eventDetail" data-eventId="{{item.i_id}}" data-eventLon="{{item.d_longitude}}" data-eventLat="{{item.d_latitude}}">
-                                                <text class="mui-ellipsis" style="font-weight: normal; font-size: 1.0625">
-                                                    												{{item.vc_title}}</text>
-                                                <text class="mui-h6 mui-ellipsis" style="display: block;">
-                                                    												{{item.txt_report_description}}</text>
-                                                <text class="mui-h6 mui-ellipsis">
-                                                    												{{item.dt_occur_time}}</text>
-                                            </view>
-                                            <button wx:if="{{item.attention=='false'}}" class="mui-btn  mui-pull-right" catchtap="toggleSub" data-subType="1102" data-eventId="{{item.i_id}}">未关注
-                                                    										</button>
-                                            <button wx:if="{{item.attention=='true'}}" class="mui-btn mui-pull-right" catchtap="toggleSub" data-subType="1002" data-eventId="{{item.i_id}}" style="background-color: #007AFF;color: white;">已关注
-                                                    										</button>
+                                            <!--该盒子用于跳转-->
+                                            <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
+                                                                                                                                										{{item.vc_big_title}}</text>
+                                            <text class="mui-h6">{{item.vc_title}}</text>
+                                            <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.vc_sign_time}}</text>
+                                        </view>
+                                    </view>
+                                </view>
+                                <!--每日一报-->
+                                <view wx:if="{{item.dictionaryVcCode=='daybullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
+                                    <view class="mui-table">
+                                        <view class="mui-table-cell mui-col-xs-10">
+                                            <!--该盒子用于跳转-->
+                                            <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
+                                                                                                                                										{{item.dictionaryVcName}}</text>
+                                            <text class="mui-h6">期号：{{item.vc_number}}</text>
+                                            <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.dt_time}}</text>
+                                        </view>
+                                    </view>
+                                </view>
+                                <!--每周一报-->
+                                <view wx:if="{{item.dictionaryVcCode=='weekbullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
+                                    <view class="mui-table">
+                                        <view class="mui-table-cell mui-col-xs-10">
+                                            <!--该盒子用于跳转-->
+                                            <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
+                                                                                                                                										{{item.dictionaryVcName}}</text>
+                                            <text class="mui-h6">期号：{{item.vc_number}}</text>
+                                            <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.dt_time}}</text>
+                                        </view>
+                                    </view>
+                                </view>
+                                <!--月报-->
+                                <view wx:if="{{item.dictionaryVcCode=='monthbullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
+                                    <view class="mui-table">
+                                        <view class="mui-table-cell mui-col-xs-10">
+                                            <!--该盒子用于跳转-->
+                                            <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
+                                                                                                                                										{{item.dictionaryVcName}}</text>
+                                            <text class="mui-h6">期号：{{item.vc_number}}</text>
+                                            <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.vc_sign_time}}</text>
                                         </view>
                                     </view>
                                 </view>
                             </view>
-                        </block>
-                    </view>
-                </view>
-                <!-- 关注事件 -->
-                <view hidden="{{ !isEvent }}">
-                    <view class="main">
-                        <block wx:for="{{subEventsList}}">
-                            <view class="mui-table-view mui-table-view-striped mui-table-view-condensed">
-                                <view class="mui-table-view-cell">
-                                    <view class="mui-table">
-                                        <view class="mui-table-cell mui-col-xs-10">
-                                            <view catchtap="eventDetail" data-eventId="{{item.iId}}" data-eventLon="{{item.dLongitude}}" data-eventLat="{{item.dLatitude}}">
-                                                <text class="mui-ellipsis" style="font-weight: normal; font-size: 1.0625">
-                                                    												{{item.vcTitle}}</text>
-                                                <text class="mui-h6 mui-ellipsis" style="display: block;">
-                                                    												{{item.txtReportDescription}}</text>
-                                                <text class="mui-h6 mui-ellipsis">
-                                                    												{{item.dtOccurTime}}</text>
-                                            </view>
-                                            <button class="mui-btn mui-pull-right" catchtap="toggleSub" data-subType="1002" data-eventId="{{item.iId}}" style="background-color: #007AFF;color: white;">已关注
-                                                    										</button>
-                                        </view>
-                                    </view>
-                                </view>
-                            </view>
-                        </block>
-                    </view>
-                </view>
-                <!-- 今日报道 -->
-                <view hidden="{{ !isReport }}">
-                    <view class="mui-control-content">
-                        <view wx:for="{{eventAlertList}}" class="mui-table-view mui-table-view-striped mui-table-view-condensed">
-                            <!--事件快报-->
-                            <view wx:if="{{item.dictionaryVcCode=='eventbullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
-                                <view class="mui-table">
-                                    <view class="mui-table-cell mui-col-xs-10">
-                                        <!--该盒子用于跳转-->
-                                        <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
-        										{{item.vc_big_title}}</text>
-                                        <text class="mui-h6">{{item.vc_title}}</text>
-                                        <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.vc_sign_time}}</text>
-                                    </view>
-                                </view>
-                            </view>
-                            <!--每日一报-->
-                            <view wx:if="{{item.dictionaryVcCode=='daybullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
-                                <view class="mui-table">
-                                    <view class="mui-table-cell mui-col-xs-10">
-                                        <!--该盒子用于跳转-->
-                                        <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
-        										{{item.dictionaryVcName}}</text>
-                                        <text class="mui-h6">期号：{{item.vc_number}}</text>
-                                        <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.dt_time}}</text>
-                                    </view>
-                                </view>
-                            </view>
-                            <!--每周一报-->
-                            <view wx:if="{{item.dictionaryVcCode=='weekbullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
-                                <view class="mui-table">
-                                    <view class="mui-table-cell mui-col-xs-10">
-                                        <!--该盒子用于跳转-->
-                                        <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
-        										{{item.dictionaryVcName}}</text>
-                                        <text class="mui-h6">期号：{{item.vc_number}}</text>
-                                        <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.dt_time}}</text>
-                                    </view>
-                                </view>
-                            </view>
-                            <!--月报-->
-                            <view wx:if="{{item.dictionaryVcCode=='monthbullitin'}}" class="mui-table-view-cell" catchtap="eventAlert" data-vcId="{{item.vc_bullitin_id}}">
-                                <view class="mui-table">
-                                    <view class="mui-table-cell mui-col-xs-10">
-                                        <!--该盒子用于跳转-->
-                                        <text class="mui-ellipsis" style="font-weight: normal;font-size: 1.0625">
-        										{{item.dictionaryVcName}}</text>
-                                        <text class="mui-h6">期号：{{item.vc_number}}</text>
-                                        <text class="mui-h6 mui-ellipsis mui-pull-left">{{item.vc_sign_time}}</text>
-                                    </view>
-                                </view>
-                            </view>
                         </view>
                     </view>
-                </view>
+                </scroll-view>
             </swiper-item>
             <!-- 趋势分析 -->
             <swiper-item>
-                <view class="info">
-                    <text>some info</text>
-                </view>
+                <scroll-view scroll-y style="display: inline">
+                    <view class="mui-content main" style="background-color: white;border-top:1px solid transparent;border-bottom:1px solid transparent;min-height: 100vh;">
+                        <view class="mui-card">
+                            <view wx:if="{{datas == null ? false : true}}" class="mui-card-header">当月接报总数：{{datas.totalEvents}}件</view>
+                            <view class="chart">
+                                <!-- <view class="chart" id="eventTypePie"></view> -->
+                                <!-- <ec-canvas id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ec }}"></ec-canvas> -->
+                                <!-- <ec_canvas  id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}"></ec_canvas>  -->
+                                <ec_canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}" bind:init="echartInit" data-x="1"></ec_canvas>
+                            </view>
+                        </view>
+                        <view class="mui-card">
+                            <view class="mui-card-header">最近六月事件趋势</view>
+                            <view class="mui-card-content">
+                                <view class="chart">
+                                    <ec_canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}" bind:init="echartInit" data-x="2"></ec_canvas>
+                                </view>
+                            </view>
+                        </view>
+                        <view class="mui-card">
+                            <view class="mui-card-header">最近六月各区域事件统计</view>
+                            <view class="mui-card-content">
+                                <view class="chart">
+                                    <ec_canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}" bind:init="echartInit" data-x="3"></ec_canvas>
+                                </view>
+                            </view>
+                        </view>
+                        <view class="mui-card">
+                            <view class="mui-card-header">最近六月风险隐患趋势</view>
+                            <view class="mui-card-content">
+                                <view class="chart">
+                                    <ec_canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}" bind:init="echartInit" data-x="4"></ec_canvas>
+                                </view>
+                            </view>
+                        </view>
+                        <view class="mui-card">
+                            <view class="mui-card-header">最近六个月区域风险隐患统计</view>
+                            <view class="mui-card-content">
+                                <view class="chart">
+                                    <ec_canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}" bind:init="echartInit" data-x="5"></ec_canvas>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                </scroll-view>
             </swiper-item>
+            <!-- </scroll-view> -->
         </swiper>
     </block>
     <!-- </view> -->
@@ -231,14 +295,24 @@
 <script>
     import wepy from 'wepy'
     import message from '../../utils/toast.js'
+    import echarts from '../../components/ec-canvas/echarts.js'
     var appUrl = wepy.$instance.globalData.appUrl
     var api = wepy.$instance.globalData.api
+    // let chart = null;
+    var totalEventsType;
+    var lastSixMonth;
+    var areaEvents;
+    var riskEvents;
+    var areaRiskEvents;
     // var id = wepy.$instance.globalData.iId
     const regeneratorRuntime = require('../../lib/regenerator-runtime/runtime')
     export default class Board extends wepy.page {
         config = {
             "enablePullDownRefresh": true,
-            "navigationBarTitleText": "看板"
+            "navigationBarTitleText": "看板",
+            usingComponents: {
+                ec_canvas: "../../components/ec-canvas/ec-canvas"
+            }
         };
         data = {
             typeObj: {
@@ -250,6 +324,7 @@
             userId: '',
             todayEventsList: [],
             subEventsList: [],
+            eventAlertList: [],
             showToday: true,
             isEvent: false,
             isReport: false,
@@ -269,6 +344,35 @@
             ],
             multiIndex: [0, 0],
             date: '',
+            datas: [],
+            ec: {},
+            dataList: [7, 6, 9, 2, 5, 6]
+        }
+        methods = {
+            echartInit(e) {
+                console.log('from echartInit')
+                console.log(e)
+                console.log(e.currentTarget.dataset.x)
+                setTimeout(() => {
+                    this.initChart(e.detail.canvas, e.detail.width, e.detail.height, e.currentTarget.dataset.x)
+                }, 3000);
+            }
+        }
+        eventAlert(e) {
+            wepy.$instance.globalData.vcId = e.currentTarget.dataset.vcId
+        }
+        getEventAlert() {
+            wepy.request({
+                url: appUrl + "/event/getAllDatebullitins?userId=" + this.userId, //开发者服务器接口地址",
+                data: {}, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    this.eventAlertList = res.data.data
+                },
+                fail: () => {},
+                complete: () => {}
+            });
         }
         // 今日事件
         toggleSub(e) {
@@ -439,31 +543,6 @@
                 });
             })
         }
-        onLoad() {
-            console.log('onLoad')
-            console.log(this.subEventsList)
-            let subCache = wx.getStorageSync('subs')
-            this.subEventsList = subCache
-            console.log(subCache)
-            console.log(this.subEventsList)
-            this.userId = wepy.$instance.globalData.iId
-            var t = 5;
-            let today = new Date()
-            let now = today.getFullYear() + '-' + (today.getMonth() < 10 ? '0' : '') + (today.getMonth() + 1) + '-' + (today.getDate() < 10 ? '0' : '') + today.getDate()
-            this.date = now
-            // console.log('Now is: ' + now)
-            this.currentTab = wepy.$instance.globalData.currentTab
-            this.makeReq().then(result => {
-                // console.log('onLoad')
-                // console.log(this.temp)
-                for (let j = 0; j < this.temp[0].children.length; j++) {
-                    this.temp1[j] = this.temp[0].children[j].text
-                }
-                for (let k = 0; k < this.temp[1].children.length; k++) {
-                    this.temp2[k] = this.temp[1].children[k].text
-                }
-            });
-        }
         swiperChange(e) {
             this.currentTab = e.detail.current,
                 wepy.$instance.globalData.currentTab = e.detail.current;
@@ -565,6 +644,401 @@
             this.showToday = false;
             this.showEvent = false;
             this.showReport = true;
+        }
+        onLoad() {
+            console.log('onLoad')
+            // console.log(this.subEventsList)
+            let subCache = wx.getStorageSync('subs')
+            this.subEventsList = subCache
+            console.log(subCache)
+            console.log(this.subEventsList)
+            this.userId = wepy.$instance.globalData.iId
+            var t = 5;
+            let today = new Date()
+            let now = today.getFullYear() + '-' + (today.getMonth() < 10 ? '0' : '') + (today.getMonth() + 1) + '-' + (today.getDate() < 10 ? '0' : '') + today.getDate()
+            this.date = now
+            // console.log('Now is: ' + now)
+            this.currentTab = wepy.$instance.globalData.currentTab
+            this.makeReq().then(result => {
+                // console.log('onLoad')
+                // console.log(this.temp)
+                for (let j = 0; j < this.temp[0].children.length; j++) {
+                    this.temp1[j] = this.temp[0].children[j].text
+                }
+                for (let k = 0; k < this.temp[1].children.length; k++) {
+                    this.temp2[k] = this.temp[1].children[k].text
+                }
+            });
+            this.getEventAlert()
+            this.getTotalEvents().then(result => {
+                totalEventsType = wepy.$instance.globalData.totalEventsType
+                console.log('from onLoad')
+                console.log(totalEventsType)
+                // this.methods.echartInit()
+            });
+            
+            this.getLastSixMonth().then(result => {
+                console.log('from getLastSixMonth')
+                lastSixMonth = wepy.$instance.globalData.lastSixMonth
+                console.log(lastSixMonth)
+            });
+            this.getAreaEvents().then(result => {
+                console.log('from getAreaEvents')
+                areaEvents = wepy.$instance.globalData.areaEvents
+                console.log(areaEvents)
+            });
+            this.getRiskEvents().then(result => {
+                console.log('from getRiskEvents')
+                riskEvents = wepy.$instance.globalData.riskEvents
+                console.log(riskEvents)
+            })
+            this.getAreaRiskEvents().then(result => {
+                console.log('from getAreaRiskEvents')
+                areaRiskEvents = wepy.$instance.globalData.areaRiskEvents
+                console.log(areaRiskEvents)
+            })
+        }
+        // Charts 
+        initChart(canvas, width, height, x) {
+            console.log('from initChart')
+            // console.log(typeof(x))
+            // console.log(totalEventsType.data)
+            switch (x) {
+                case '1':
+                    const chart = echarts.init(canvas, null, {
+                        width: width,
+                        height: height
+                    })
+                    canvas.setChart(chart)
+                    var option = {
+                        //关闭动画效果提高性能
+                        animation: true,
+                        series: [{
+                            name: 'Type',
+                            type: 'pie',
+                            clockWise: true,
+                            radius: '55%',
+                            center: ['50%', '50%'],
+                            hoverAnimation: false,
+                            data: totalEventsType.data, //,this.dataList
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        formatter: "{b} :\n{c} ({d}%)"
+                                    },
+                                    labelLine: {
+                                        show: true
+                                    }
+                                }
+                            }
+                        }]
+                    }
+                    chart.setOption(option)
+                    return chart
+                    break;
+                case '2':
+                    const chart1 = echarts.init(canvas, null, {
+                        width: width,
+                        height: height
+                    })
+                    canvas.setChart(chart1)
+                    var option1 = {
+                        //关闭动画效果提高性能
+                        animation: true,
+                        xAxis: {
+                            type: 'category',
+                            //设置X轴标签全部显示，不隔行
+                            axisLabel: {
+                                interval: 0
+                            },
+                            data: lastSixMonth.key
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            data: lastSixMonth.value,
+                            type: 'line',
+                            name: '数量',
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: 'black'
+                                        }
+                                    }
+                                },
+                            }
+                        }],
+                        dataZoom: [{
+                            type: 'slider',
+                            show: true,
+                            xAxisIndex: [0],
+                            //				start: 0,
+                            //				end: 50,
+                            startValue: 0,
+                            endValue: 3,
+                            zoomLock: true
+                        }]
+                    }
+                    chart1.setOption(option1)
+                    return chart1
+                    break;
+                case '3':
+                    const chart2 = echarts.init(canvas, null, {
+                        width: width,
+                        height: height
+                    })
+                    canvas.setChart(chart2)
+                    var option2 = {
+                        //关闭动画效果提高性能
+                        animation: true,
+                        xAxis: {
+                            type: 'category',
+                            //设置X轴标签全部显示，不隔行
+                            axisLabel: {
+                                interval: 0
+                            },
+                            data: areaEvents.key
+                        },
+                        yAxis: {
+                            type: 'value',
+                        },
+                        series: [{
+                            name: '件数',
+                            type: 'bar',
+                            data: areaEvents.value,
+                            name: '数量',
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: 'black'
+                                        }
+                                    }
+                                },
+                            }
+                        }],
+                        dataZoom: [{
+                            type: 'slider',
+                            show: true,
+                            xAxisIndex: [0],
+                            //				start: 0,
+                            //				end: 40,
+                            startValue: 0,
+                            endValue: 3,
+                            zoomLock: true
+                        }]
+                    }
+                    chart2.setOption(option2)
+                    return chart2
+                    break;
+                case '4':
+                    const chart3 = echarts.init(canvas, null, {
+                        width: width,
+                        height: height
+                    })
+                    canvas.setChart(chart3)
+                    var option3 = {
+                        //关闭动画效果提高性能
+                        animation: true,
+                        xAxis: {
+                            type: 'category',
+                            //设置X轴标签全部显示，不隔行
+                            axisLabel: {
+                                interval: 0
+                            },
+                            data: riskEvents.key
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            data: riskEvents.value,
+                            type: 'line',
+                            name: '数量',
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: 'black'
+                                        }
+                                    }
+                                },
+                            }
+                        }],
+                        dataZoom: [{
+                            type: 'slider',
+                            show: true,
+                            xAxisIndex: [0],
+                            //				start: 0,
+                            //				end: 50,
+                            startValue: 0,
+                            endValue: 3,
+                            zoomLock: true
+                        }]
+                    }
+                    chart3.setOption(option3)
+                    return chart3
+                    break;
+                case '5':
+                    const chart4 = echarts.init(canvas, null, {
+                        width: width,
+                        height: height
+                    })
+                    canvas.setChart(chart4)
+                    var option4 = {
+                        //关闭动画效果提高性能
+                        animation: true,
+                        xAxis: {
+                            type: 'category',
+                            //设置X轴标签全部显示，不隔行
+                            axisLabel: {
+                                interval: 0
+                            },
+                            data: areaRiskEvents.key
+                        },
+                        yAxis: {
+                            type: 'value',
+                        },
+                        series: [{
+                            name: '件数',
+                            type: 'bar',
+                            data: areaRiskEvents.value,
+                            name: '数量',
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: 'black'
+                                        }
+                                    }
+                                },
+                            }
+                        }],
+                        dataZoom: [{
+                            type: 'slider',
+                            show: true,
+                            xAxisIndex: [0],
+                            //				start: 0,
+                            //				end: 40,
+                            startValue: 0,
+                            endValue: 3,
+                            zoomLock: true
+                        }]
+                    }
+                    chart4.setOption(option4)
+                    return chart4
+                    break;
+            }
+        }
+        getTotalEvents() {
+            return new Promise(resolve => {
+                wepy.request({
+                    url: appUrl + "/event/totalEvents", //开发者服务器接口地址",
+                    data: {}, //请求的参数",
+                    method: 'GET',
+                    dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                    success: res => {
+                        // console.log('from getTotalEvents')
+                        // console.log(res)
+                        this.datas = res.data.data.totalEvents
+                        // console.log(this.datas)
+                        //   console.log(res.data.data.totalEventsType)
+                        // this.eventTypeSetOption(res.data.data.totalEventsType)
+                        wepy.$instance.globalData.totalEventsType = res.data.data.totalEventsType
+                        console.log('totalEventsType: ')
+                        // console.log(wepy.$instance.globalData.totalEventsType)
+                        return resolve()
+                    },
+                    fail: () => {},
+                    complete: () => {}
+                });
+            })
+        }
+        getLastSixMonth() {
+            return new Promise(resolve => {
+                wepy.request({
+                    url: appUrl + "/event/getLastSixMonthsEvents", //开发者服务器接口地址",
+                    data: {}, //请求的参数",
+                    method: 'GET',
+                    dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                    success: res => {
+                        console.log('from getLastSixMonth')
+                        console.log(res)
+                        wepy.$instance.globalData.lastSixMonth = res.data.data
+                        return resolve()
+                    },
+                    fail: () => {},
+                    complete: () => {}
+                });
+            })
+        }
+        getAreaEvents() {
+            return new Promise(resolve => {
+                wepy.request({
+                url: appUrl + "/event/getLastSixMonthsAreaEvents", //开发者服务器接口地址",
+                data: {}, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    console.log('from getAreaEvents')
+                    console.log(res)
+                    wepy.$instance.globalData.areaEvents = res.data.data
+                    return resolve()
+                    // eventAreaAnalysisSetOption(res.data.data)
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+            })
+        }
+        getRiskEvents() {
+            return new Promise(resolve => {
+                wepy.request({
+                url: appUrl + "/event/getLastSixMonthsRisks", //开发者服务器接口地址",
+                data: {}, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    console.log('from getRiskEvents')
+                    console.log(res)
+                    wepy.$instance.globalData.riskEvents = res.data.data
+                    return resolve()
+                    // risksSetOption(res.data.data)
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+            })
+        }
+        getAreaRiskEvents() {
+            return new Promise(resolve => {
+                wepy.request({
+                url: appUrl + "/event//getLastSixMonthsAreaRisks", //开发者服务器接口地址",
+                data: {}, //请求的参数",
+                method: 'GET',
+                dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+                success: res => {
+                    console.log('from getAreaRiskEvents')
+                    console.log(res)
+                    // risksAreaAnalysisSetOption(res.data.data)
+                    wepy.$instance.globalData.areaRiskEvents = res.data.data
+                    return resolve()
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+            })
         }
     }
 </script>
