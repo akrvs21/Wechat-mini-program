@@ -1,0 +1,26 @@
+@font-face {
+ font-family: "iconfont";
+ font-weight: normal;
+ font-style: normal;
+ src: url('../fonts/audio.ttf') format('truetype');
+}
+
+.iconfont {
+		font-family: "iconfont" !important;
+    font-size: 24px;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    display: inline-block;
+    text-decoration: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+.icon-audio:before {
+  content: "\e667";
+}
+
+
+
+
+

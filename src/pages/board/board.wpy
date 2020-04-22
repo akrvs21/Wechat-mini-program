@@ -705,7 +705,7 @@
             // console.log(totalEventsType.data)
             switch (x) {
                 case '1':
-                    const chart = echarts.init(canvas, null, {
+                    {const chart = echarts.init(canvas, null, {
                         width: width,
                         height: height
                     })
@@ -736,9 +736,9 @@
                     }
                     chart.setOption(option)
                     return chart
-                    break;
+                    break;}
                 case '2':
-                    const chart1 = echarts.init(canvas, null, {
+                    {const chart1 = echarts.init(canvas, null, {
                         width: width,
                         height: height
                     })
@@ -786,9 +786,9 @@
                     }
                     chart1.setOption(option1)
                     return chart1
-                    break;
+                    break;}
                 case '3':
-                    const chart2 = echarts.init(canvas, null, {
+                    {const chart2 = echarts.init(canvas, null, {
                         width: width,
                         height: height
                     })
@@ -837,9 +837,9 @@
                     }
                     chart2.setOption(option2)
                     return chart2
-                    break;
+                    break;}
                 case '4':
-                    const chart3 = echarts.init(canvas, null, {
+                    {const chart3 = echarts.init(canvas, null, {
                         width: width,
                         height: height
                     })
@@ -887,9 +887,9 @@
                     }
                     chart3.setOption(option3)
                     return chart3
-                    break;
+                    break;}
                 case '5':
-                    const chart4 = echarts.init(canvas, null, {
+                    {const chart4 = echarts.init(canvas, null, {
                         width: width,
                         height: height
                     })
@@ -938,7 +938,7 @@
                     }
                     chart4.setOption(option4)
                     return chart4
-                    break;
+                    break;}
             }
         }
         getTotalEvents() {

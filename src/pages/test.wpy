@@ -1,14 +1,16 @@
-<style lang='less'>
-    .line__chart {
-        width: 700rpx;
-        height: 600rpx;
-        margin: 0 auto;
-    }
+<style>
+
 </style>
 
 <template>
-    <view class="line__chart">
-        <ec_canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}" bind:init="echartInit"></ec_canvas>
+    <!--index.wxml-->
+    <view>
+        <view class='up'>--------------</view>
+        <block wx:for="{{treeDatas}}" wx:for-index="idx">
+          <mytree model='{{ treeDatas[idx] }}' bind:tapitem='tapItem'></mytree>
+        </block>
+        <view class='down'>--------------</view>
+        <!-- <button bindtap="btn">press</button> -->
     </view>
 </template>
 
@@ -17,43 +19,38 @@
     import echarts from '../components/ec-canvas/echarts.js'
     export default class LineChart extends wepy.page {
         config = {
-            navigationBarTitleText: 'Charts',
-            usingComponents: {
-                ec_canvas: '../components/ec-canvas/ec-canvas'
+            "usingComponents": {
+                "mytree": "../components/mytree/mytree"
             }
-        }
+        };
         data = {
-            ec: {},
-            dataList : [7, 6, 9, 2, 5, 6]
+            // treeData: treeData
+            treeDatas: {}
         }
-        methods = {
-            echartInit(e) {
-                console.log('from echartInit')
-                console.log(e)
-                this.initChart(e.detail.canvas, e.detail.width, e.detail.height)
-            }
+        tapItem(e) {
+            console.log('index接收到的itemid: ' + e.detail.itemid);
         }
-        initChart(canvas, width, height) {
-            const chart = echarts.init(canvas, null, {
-                width: width,
-                height: height
+        makeRequest() {
+            // return new Promise(resolve => {
+                var that = this
+            wepy.request({
+                url: "http://192.168.3.15:8081//contactorGroup/group",
+                data: {},
+                success(res) {
+                    console.log('from callback func')
+                    console.log(res)
+                    that.treeDatas = res.data.data
+                    that.$apply()
+                    // return resolve()
+                    console.log(that.treeDatas)
+                }
             })
-            canvas.setChart(chart)
-            var option = {
-                xAxis: {
-                    type: 'category',
-                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [{
-                    data: this.dataList,
-                    type: 'line'
-                }]
-            }
-            chart.setOption(option)
-            return chart
+            // })
+        }
+        onLoad() {
+            // this.makeRequest().then(result => {
+            this.makeRequest()
+            // })
         }
     }
 </script>

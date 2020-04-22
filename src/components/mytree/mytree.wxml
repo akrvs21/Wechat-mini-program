@@ -1,0 +1,22 @@
+<!-- <view>
+  <view>
+    <text catchtap='toggle'>{{ open ? '[ - ]' : '[ + ]' }} </text>
+    <text>{{ model.title }}</text>
+  </view>
+  <view style='padding-left: 50rpx;'  hidden='{{ !open }}'>
+    <text >[ · ] </text>
+    <text bindtap='tapItem'>{{ model.title }}</text>
+  </view>
+</view> -->
+
+<view>
+  <view>
+    <text wx:if='{{ isBranch }}' bindtap='toggle'>{{ open ? '[ - ]' : '[ + ]' }} </text>
+    <text wx:else>[ · ] </text>
+    <text>{{ model.title }}</text>
+  </view>
+  <view model='{{model.children}}' style='padding-left: 50rpx;' wx:if='{{ isBranch }}' hidden='{{ !open }}'>
+    <text>{{ model.title }}</text>
+    <!-- <mytree wx:for='{{ model }}' wx:key='idx' model='{{ item.children }}'></mytree> -->
+  </view>
+</view>

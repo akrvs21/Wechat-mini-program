@@ -10,11 +10,13 @@
   export default class extends wepy.app {
     config = {
       pages: [
+        'pages/event/eventFeedback',
+        'pages/test',
         'login',
         'pages/board/board',
         
         
-        'pages/test',
+    
         
         'pages/video/video',
         
@@ -172,6 +174,8 @@
 
       api,
       vcId: ''
+
+      // isBranch: false
     };
   }
 </script>
