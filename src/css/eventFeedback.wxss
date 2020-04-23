@@ -1,9 +1,5 @@
-[v-cloak] {
-   display: none;
-}
 
-html,
-body {
+page {
 	height: 100vh;
 	display: flex;
 	flex-direction: column;
@@ -17,7 +13,7 @@ body {
 	padding-bottom: 3.1875rem;
 }
 
-#header {
+.header {
 	background-color: #3F4563;
 	display: flex;
 	justify-content: space-between;
@@ -164,7 +160,7 @@ p {
 .feedback-Content-Right:before {
 	content: '';
 	position: absolute;
-	top: 0.75rem right: inherit;
+	top: 0.75rem right inherit;
 	left: 100%;
 	border: 0.375rem solid transparent;
 	border-left-color: #9EEA6A;
@@ -269,7 +265,7 @@ p {
 
 }
 
-#eventFeedbackDatas {
+.eventFeedbackDatas {
 	background-color: #f5f5f5;
 	flex: 1;
 	display: flex;

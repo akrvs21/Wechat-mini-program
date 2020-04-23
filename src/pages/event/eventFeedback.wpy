@@ -1,147 +1,78 @@
 <style>
-    @import '../../fonts/iconfont.wxss';
-    @import '../../css/iconAudio.wxss';
-    @import '../../css/eventFeedback.wxss';
-    @import '../../css/mui.wxss';
+    @import '../../css/feedback.wxss';
+    /* @import '../../css/mui.wxss';
+                @import '../../fonts/iconfont.wxss';
+                @import '../../css/iconAudio.wxss';
+                @import '../../css/eventFeedback.wxss'; */
 </style>
 
 <template>
     <block>
-        <view id="header" class="mui-bar mui-bar-nav">
-            <navigator id="backboard" class=" mui-icon mui-icon-left-nav mui-pull-left" style="color: #ffffff;"></navigator>
-            <text v-if="datas.vcTitle" id="headerConten" class="mui-text-center title">
-                				{{datas.vcTitle}}
-                			</text>
-            <view style="width: 2.75rem;height: 2.75rem;margin-right: -0.625rem;"></view>
-        </view>
-        <!-- 脚步功能模块 -->
-        <view class="mui-bar mui-bar-tab nav" style="background-color: #3F4563;margin: 0rem;padding: 0rem;height: auto;">
-            <view class="mui-row" style="margin: 0.3125rem;">
-                <view id="input" class="mui-col-sm-8 mui-col-xs-8" style="background-color: #3F4563;">
-                    <view class="mui-input-row" style="background-color: #3F4563;">
-                        <input id="msg" type="text" class="mui-input-clear" style="padding-top: 0.625rem;padding-right: 2.8125rem;padding-bottom: 0.625rem; padding-left: 0.3125rem;background-color: #FFFFFF;margin-bottom: 0rem;" placeholder="文字输入">
-                        <view class="soundRecording" id="iconMic" style="text-align:center"> <text id="iconspeack">按住说话</text></view>
-                    </view>
-                </view>
-                <view class="mui-col-sm-1 mui-col-xs-1" style="background-color: #3F4563;">
-                    <view onclick="iconMic1()" id="ly" class="mui-icon mui-icon-mic" style="padding-left: 0.5rem;margin-top:-0.1875rem;color: #ffffff;"></view>
-                    <view id="wz" class="mui-icon mui-icon-compose" style="padding-left: 0.5rem;margin-top:-0.1875rem;color: #ffffff;display: none" onclick="textBtn()"></view>
-                </view>
-                <view class="mui-col-sm-1 mui-col-xs-1" style="background-color: #3F4563;">
-                    <view id="iconPlus" class=" mui-icon mui-icon-plus" style="padding-left: 0.5rem;margin-top:-0.1875rem;color: #ffffff;"></view>
-                    <view id="iconClose" class="mui-hidden mui-icon mui-icon-close" style="padding-left: 0.5rem;margin-top:-0.1875rem;color: #22DDB8;"></view>
-                </view>
-                <view class="mui-col-sm-2 mui-col-xs-2" style="background-color: #3F4563;">
-                    <view id="sendMsg" class="" style="text-align: center;margin-top:10px;color: #ffffff;">
-                        发送
-                    </view>
-                </view>
-            </view>
-            <view id="more" class="mui-row mui-hidden">
-                <hr color="#dddddd" />
-                <!-- 打开相册 -->
-                <view id="galleryImg" class="mui-col-sm-3 mui-col-xs-3" style="text-align: center;vertical-align: middle;background-color: #3F4563;color: #ffffff;">
-                    <text class="mui-icon mui-icon-image" style="top: 3px;width: 24px;height: 24px;padding-top: 0;padding-bottom: 0;"></text>
-                    <text class="mui-tab-label" style="font-size: 11px;display: block;overflow: hidden;text-overflow: ellipsis;">相册</text>
-                </view>
-                <!-- 打开相机 -->
-                <view id="getImage" class="mui-col-sm-3 mui-col-xs-3" style="text-align: center;vertical-align: middle;background-color: #3F4563;color: #ffffff;">
-                    <text class="mui-icon mui-icon-camera" style="top: 3px;width: 24px;height: 24px;padding-top: 0;padding-bottom: 0;"></text>
-                    <text class="mui-tab-label" style="font-size: 11px;display: block;overflow: hidden;text-overflow: ellipsis;">相机</text>
-                </view>
-                <!-- 打开直播 -->
-                <view id="video" class="mui-col-sm-3 mui-col-xs-3" style="text-align: center;vertical-align: middle;background-color: #3F4563;color: #ffffff;">
-                    <text class="mui-icon mui-icon-videocam" style="top: 3px;width: 24px;height: 24px;padding-top: 0;padding-bottom: 0;"></text>
-                    <text class="mui-tab-label" style="font-size: 11px;display: block;overflow: hidden;text-overflow: ellipsis;">直播</text>
-                </view>
-                <!-- 打开地图 -->
-                <view id="location" class="mui-col-sm-3 mui-col-xs-3" style="text-align: center;vertical-align: middle;background-color: #3F4563;color: #ffffff;">
-                    <text class="mui-icon mui-icon-location" style="top: 3px;width: 24px;height: 24px;padding-top: 0;padding-bottom: 0;"></text>
-                    <text class="mui-tab-label" style="font-size: 11px;display: block;overflow: hidden;text-overflow: ellipsis;">位置</text>
-                </view>
-            </view>
-        </view>
-        <!-- /脚步功能模块 -->
-        <view class="content_wrap">
-            <view class="mui-content" v-if="type" style="padding-top: 1.55rem;padding-bottom: 0.3rem;" id="eventDefault">
-            </view>
-            <view id="eventFeedbackDatas" class="mui-content">
-                <view id="locationWindow">
-                    <view v-if="type" style="padding-top:0.4rem;text-align: center;font-size: 0.875rem;color: floralwhite;background-color: rgba(191,191,191,0.9);padding-bottom: 0.3rem;position: fixed;z-index: 999;left: 0rem;right: 0rem;top: 2.7rem;">
-                        <navigator class="mui-action-back mui-icon mui-icon-location mui-pull-left " style="color: #FFFFFF;font-size:1.1rem;text-align: center;"></navigator>
-                        您正在分享即时位置
-                        <navigator class="mui-icon mui-icon-arrowright mui-pull-right" style="color: #FFFFFF;font-size:1.1rem;text-align: center;"></navigator>
-                    </view>
-                </view>
-                <view class="feedback-chat">
-                    <view id="picFeedback" class="feedback-ul">
-                        <view id="feedbackHeight" class="feedback-li" v-for="data in datas">
-                            <!-- 显示时间 -->
-                            <view class="feedback-time-p">
-                                <text class="feedback-time">{{data.dtTime}}</text>
+        <!-- Footstep module -->
+        <!-- <view class="message">
+                        <form class="sendMessage">
+                            <input type="text" placeholder="Start typing"></input>
+                            <image catchtap="openMenu" src="http://cdn.onlinewebfonts.com/svg/img_387362.png" style="width: 55rpx; height: 55rpx; padding-left: 0.5rem;margin-top:-0.1875rem;color: #22DDB8;"></image>
+                            <button type="primary" size="small" button-hover="blue">Send</button>
+                        </form>
+                        <view class="increased {{ anistyle ? 'slideup' : 'slidedown' }}" >
+                            <view class="image">Image</view>
+                        </view>
+                    </view> -->
+        <!--pages/chat/chat.wxml-->
+        <view class="news">
+            <view class="chat-notice">Welcome to chat room </view>
+            <view class="historycon">
+                <scroll-view scroll-y="true" class="history" scroll-top="{{scrollTop}}">
+                    <block wx:for="{{newslist}}" wx:key>
+                        <view>{{item.date}}</view>
+                        <!--自己的消息  -->
+                        <view class="chat-news">
+                            <view style="text-align: right;padding-right: 20rpx;">
+                                <text class="name">MyName</text>
+                                <image class='new_img' src="https://img.icons8.com/ios/1600/user-male-circle-filled.png"></image>
                             </view>
-                            <!-- 不是本ID的放到左边 -->
-                            <view v-if="data.iOperatorId!=userId">
-                                <image width="45" height="45" src="../images/sendedPerson.png" class="personImg-left">
-                                    <view class="feedback-Content-Left">
-                                        <view v-if="data.vcCode == 'feedbackText'" id="" class="feedback-Content-Left-text">
-                                            <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-                                            {{data.txtContent}}
-                                        </view>
-                                        <view v-if="data.vcCode == 'feedbackPic'">
-                                            <view>
-                                                <image v-bind:src="url + data.txtContent" class="feedback-Content-Left-Image" onclick="showImagePopup(this.src)" />
-                                            </view>
-                                        </view>
-                                        <view v-if="data.vcCode == 'feedbackMedia'">
-                                            <view>
-                                                <view class="iconfont icon-luyin-copy" v-on:click="playRecord(url + data.txtContent)" style="padding-left: 0.3rem;margin-top:-0.25rem;">
-                                                </view>
-                                                <text>{{data.vcSize}}</text>
-                                            </view>
-                                        </view>
-                                        <!-- 播放视频 -->
-                                        <view v-if="data.vcCode == 'feedbackVideo'" class="play playleft" style="background: #000;">
-                                            <image src="../images/play.png" alt="">
-                                                <video width="100%" height="100%" src="{{url + data.txtContent}}">
-                										</video>
-                                        </view>
-                                    </view>
-                            </view>
-                            <!-- 本ID的放到右边 -->
-                            <view v-if="data.iOperatorId==userId" class="feedback-Content-Right-div">
-                                <image width="45" height="45" src="../images/receivedPerson.png" class="personImg-right">
-                                    <view class="feedback-Content-Right">
-                                        <view v-if="data.vcCode == 'feedbackText'" class="feedback-Content-Left-text">
-                                            <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-                                            {{data.txtContent}}
-                                        </view>
-                                        <view v-if="data.vcCode == 'feedbackPic'">
-                                            <view>
-                                                <image v-bind:src="url + data.txtContent" class="feedback-Content-Left-Image" onclick="showImagePopup(this.src)" />
-                                            </view>
-                                        </view>
-                                        <view v-if="data.vcCode == 'feedbackMedia'">
-                                            <view>
-                                                <text>{{data.vcSize}}</text>
-                                                <view class="iconfont icon-luyin" v-on:click="playRecord(url + data.txtContent)" style="padding-left: 0.3rem;margin-top:-0.25rem;">
-                                                </view>
-                                            </view>
-                                        </view>
-                                        <!-- 播放视频 播放事件-->
-                                        <view v-if="data.vcCode == 'feedbackVideo'" class="play playright" style="background: #000;">
-                                            <image src="../images/play.png" alt="">
-                                                <video width="100%" height="100%" src="{{url + data.txtContent}}">
-                										</video>
-                                        </view>
-                                    </view>
+                            <view class='my_right'>
+                                <!-- <block wx:if="{{item.type=='text'}}">
+                                            <view class='new_txt'>{{item.content}}</view>
+                                        </block>
+                                        <block wx:if="{{item.type=='image'}}">
+                                            <image class="selectImg" src="{{item.images}}" data-src="{{item.images}}" lazy-load="true" bindtap="previewImg"></image>
+                                        </block> -->
                             </view>
                         </view>
-                    </view>
-                </view>
-                <input type="hidden" id="picIndex" value="0">
-                <view id='image-list' class="row image-list">
-                </view>
+                        <!-- 别人的消息  -->
+                        <!-- <view class="chat-news" wx:else>
+                                    <view style="text-align: left;padding-left: 20rpx;">
+                                        <image class='new_img' src="{{item.avatarUrl? item.avatarUrl:'images/avator.png'}}"></image>
+                                        <text class="name">{{ item.nickName }}</text>
+                                    </view>
+                                    <view class='you_left'>
+                                        <block wx:if="{{item.type=='text'}}">
+                                            <view class='new_txt'>{{item.content}}</view>
+                                        </block>
+                                        <block wx:if="{{item.type=='image'}}">
+                                            <image class="selectImg" src="{{item.images}}" data-src="{{item.images}}" lazy-load="true" bindtap="previewImg"></image>
+                                        </block>
+                                    </view>
+                                </view> -->
+                    </block>
+                </scroll-view>
+            </view>
+        </view>
+        <view id="flag"></view>
+        <!-- 聊天输入 -->
+        <view class="message">
+            <form bindreset="cleanInput" class="sendMessage">
+                <input type="text" placeholder="请输入聊天内容.."></input>
+                <view class="add" bindtap='openMenu'>+</view>
+                <button type="primary" formType="reset" size="mini" button-hover="blue">发送</button>
+            </form>
+            <view class="weui-flex increased {{ aniStyle ? 'slideup' : 'slidedown' }}" wx:if="{{increase}}">
+                <view class="option weui-flex__item" catchtap="chooseImg">相册 </view>
+                <view class="option weui-flex__item" catchtap="takePic">相机 </view>
+                <view class="option weui-flex__item">直播 </view>
+                <view class="option weui-flex__item">位置 </view>
             </view>
         </view>
     </block>
@@ -150,6 +81,70 @@
 <script>
     import wepy from 'wepy'
     export default class eventFeedback extends wepy.page {
-        config = {};
+        config = {
+            // navigationBarTitleText: '{{this.datas.title}}'
+        };
+        data = {
+            datas: {
+                title: 'Event 1'
+            },
+            aniStyle: true,
+            increase: false
+        }
+        openMenu() {
+            this.aniStyle = true
+            this.increase = !this.increase
+            this.$apply()
+            console.log('aniStyle=' + this.aniStyle)
+            console.log('increase=' + this.increase)
+        }
+        onLoad() {
+            wepy.setNavigationBarTitle({
+                title: this.datas.title
+            });
+        }
+        chooseImg() {
+            wepy.chooseImage({
+                count: '1', //最多可以选择的图片张数,
+                sizeType: ['original', 'compressed'],
+                sourceType: ['album'],
+                success: res => {
+                    console.log('select image')
+                    const tempFilePaths = res.tempFilePaths
+                    console.log('the file path is: ')
+                    console.log(tempFilePaths)
+                }, //返回图片的本地文件路径列表 tempFilePaths,
+                fail: () => {},
+                complete: () => {}
+            });
+        }
+        takePic() {
+            const cam = wx.createCameraContext()
+            wepy.showActionSheet({
+                itemList: ['拍照片', '拍短视频'], //按钮的文字数组，数组长度最大为6个,
+                itemColor: '#000000', //按钮的文字颜色,
+                success: res => {
+                    console.log(res)
+                    if (res.tapIndex == 0) {
+                        console.log('from camera')
+                        cam.takePhoto({
+                            quality: 'high',
+                            success: (res) => {
+                                console.log('take a pic')
+                                console.log(res)
+                            }
+                        })
+                    } else if (res.tapIndex == 1) {
+                        console.log('from video')
+                        cam.startRecord({
+                            success: res => {
+                                console.log('take a video')
+                                console.log(res)
+                            }
+                        })
+                    }
+                }
+            });
+        }
     }
 </script>
