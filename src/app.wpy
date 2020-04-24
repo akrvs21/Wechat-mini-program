@@ -11,8 +11,10 @@
     config = {
       pages: [
         'pages/event/eventFeedback',
-        'pages/test',
         'login',
+        
+        'pages/test',
+        
         'pages/board/board',
         
         
