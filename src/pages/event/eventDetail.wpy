@@ -153,7 +153,7 @@
         <!-- Button -->
         <view class="mui-row">
             <view class="mui-button-row">
-                <button type="button" class="mui-btn mui-btn-danger" style="margin-bottom: 3rem;width: 9rem;background-color: red;">进入处置</button>
+                <button type="button" catchtap="goToFeedback" class="mui-btn mui-btn-danger" style="margin-bottom: 3rem;width: 9rem;background-color: red;">进入处置</button>
             </view>
         </view>
     </view>
@@ -246,11 +246,22 @@
             this.fold = !this.fold
             console.log('ellipsis is pressed')
         }
+
+        goToFeedback () {
+            wepy.navigateTo({ url: './eventFeedback' });
+            
+        }
+
         onLoad() {
+            console.log('from onLoad in eventDetail')
+            console.log(wepy.$instance.globalData.eventTitle)
+            wepy.setNavigationBarTitle({ title: wepy.$instance.globalData.eventTitle });
             this.eventId = wepy.$instance.globalData.eventId
             this.getEventDetails()
             this.getMiniEvents()
+            // wepy.$instance.globalData.eventTitle = this.eventDetails.event.vcTitle
             console.log(this.fold)
+   
         }
     }
 </script>

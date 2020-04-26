@@ -6,36 +6,28 @@
 <script>
   import wepy from 'wepy';
   const api = require('./utils/api')
-
   export default class extends wepy.app {
     config = {
       pages: [
-        'pages/event/eventFeedback',
         'login',
-        
+        'pages/event/eventFeedback',
         'pages/test',
-        
         'pages/board/board',
-        
-        
-    
-        
         'pages/video/video',
-        
         'pages/user/me',
         'pages/contacts/contactList',
-        
-        
         'pages/user/user',
-        
-        
         'pages/event/event',
         'pages/event/eventDetail',
-        
         'pages/contacts/contact',
         'components/moveverify/moveverify',
         'components/ec-canvas/ec-canvas'
       ],
+      permission: {
+        "scope.userLocation": {
+          "desc": "你的位置信息将用于小程序位置接口的效果展示" // 高速公路行驶持续后台定位
+        }
+      },
       window: {
         backgroundTextStyle: 'light',
         navigationBarBackgroundColor: '#022072',
@@ -78,7 +70,6 @@
         ]
       }
     };
-
     onLaunch() {
       console.log('on launch');
     }
@@ -110,11 +101,10 @@
       //    appUrl : "http://120.77.17.30:8055",
       //    appUrl : "http://19.16.40.244:8055",
       //    appUrl : "http://192.168.7.44:8055", //xrw
-
-      appUrl: 'http://192.168.3.15:8081/', //1
-
+      // appUrl: 'http://192.168.3.15:8081/', //1
+      appUrl: 'http://192.168.3.146:9922', // ppp
+      // appUrl: 'http://192.168.3.146:9922/', //1
       // appUrl: 'http://112.93.129.113:20500', // 2 sadi
-
       // appUrl: "http://192.168.3.21:8055/", sadi
       // appUrl: "http://192.168.1.80:8055", //YX sadi
       //    appUrl : "https://218.17.84.149:8055", //深圳 外网
@@ -166,6 +156,7 @@
       nickname: '',
       // Event
       eventId: '',
+      eventTitle: '',
       currentTab: 0,
       LiveCurrentTab: 0,
       totalEventsType: {},
@@ -173,10 +164,8 @@
       areaEvents: {},
       riskEvents: {},
       areaRiskEvents: {},
-
       api,
       vcId: ''
-
       // isBranch: false
     };
   }

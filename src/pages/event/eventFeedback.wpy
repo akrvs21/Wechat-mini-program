@@ -1,24 +1,24 @@
 <style>
     @import '../../css/feedback.wxss';
     /* @import '../../css/mui.wxss';
-                                    @import '../../fonts/iconfont.wxss';
-                                    @import '../../css/iconAudio.wxss';
-                                    @import '../../css/eventFeedback.wxss'; */
+                                                        @import '../../fonts/iconfont.wxss';
+                                                        @import '../../css/iconAudio.wxss';
+                                                        @import '../../css/eventFeedback.wxss'; */
 </style>
 
 <template>
     <block>
         <!-- Footstep module -->
         <!-- <view class="message">
-                                            <form class="sendMessage">
-                                                <input type="text" placeholder="Start typing"></input>
-                                                <image catchtap="openMenu" src="http://cdn.onlinewebfonts.com/svg/img_387362.png" style="width: 55rpx; height: 55rpx; padding-left: 0.5rem;margin-top:-0.1875rem;color: #22DDB8;"></image>
-                                                <button type="primary" size="small" button-hover="blue">Send</button>
-                                            </form>
-                                            <view class="increased {{ anistyle ? 'slideup' : 'slidedown' }}" >
-                                                <view class="image">Image</view>
-                                            </view>
-                                        </view> -->
+            <form class="sendMessage">
+            <input type="text" placeholder="Start typing"></input>
+            <image catchtap="openMenu" src="http://cdn.onlinewebfonts.com/svg/img_387362.png" style="width: 55rpx; height: 55rpx; padding-left: 0.5rem;margin-top:-0.1875rem;color: #22DDB8;"></image>
+            <button type="primary" size="small" button-hover="blue">Send</button>
+            </form>
+            <view class="increased {{ anistyle ? 'slideup' : 'slidedown' }}" >
+            <view class="image">Image</view>
+            </view>
+            </view> -->
         <!--pages/chat/chat.wxml-->
         <view class="news">
             <view class="chat-notice">Welcome to chat room </view>
@@ -34,28 +34,28 @@
                             </view>
                             <view class='my_right'>
                                 <!-- <block wx:if="{{item.type=='text'}}">
-                                                                <view class='new_txt'>{{item.content}}</view>
-                                                            </block>
-                                                            <block wx:if="{{item.type=='image'}}">
-                                                                <image class="selectImg" src="{{item.images}}" data-src="{{item.images}}" lazy-load="true" bindtap="previewImg"></image>
-                                                            </block> -->
+                                                                                    <view class='new_txt'>{{item.content}}</view>
+                                                                                </block>
+                                                                                <block wx:if="{{item.type=='image'}}">
+                                                                                    <image class="selectImg" src="{{item.images}}" data-src="{{item.images}}" lazy-load="true" bindtap="previewImg"></image>
+                                                                                </block> -->
                             </view>
                         </view>
                         <!-- 别人的消息  -->
                         <!-- <view class="chat-news" wx:else>
-                                                        <view style="text-align: left;padding-left: 20rpx;">
-                                                            <image class='new_img' src="{{item.avatarUrl? item.avatarUrl:'images/avator.png'}}"></image>
-                                                            <text class="name">{{ item.nickName }}</text>
-                                                        </view>
-                                                        <view class='you_left'>
-                                                            <block wx:if="{{item.type=='text'}}">
-                                                                <view class='new_txt'>{{item.content}}</view>
-                                                            </block>
-                                                            <block wx:if="{{item.type=='image'}}">
-                                                                <image class="selectImg" src="{{item.images}}" data-src="{{item.images}}" lazy-load="true" bindtap="previewImg"></image>
-                                                            </block>
-                                                        </view>
-                                                    </view> -->
+                                                                            <view style="text-align: left;padding-left: 20rpx;">
+                                                                                <image class='new_img' src="{{item.avatarUrl? item.avatarUrl:'images/avator.png'}}"></image>
+                                                                                <text class="name">{{ item.nickName }}</text>
+                                                                            </view>
+                                                                            <view class='you_left'>
+                                                                                <block wx:if="{{item.type=='text'}}">
+                                                                                    <view class='new_txt'>{{item.content}}</view>
+                                                                                </block>
+                                                                                <block wx:if="{{item.type=='image'}}">
+                                                                                    <image class="selectImg" src="{{item.images}}" data-src="{{item.images}}" lazy-load="true" bindtap="previewImg"></image>
+                                                                                </block>
+                                                                            </view>
+                                                                        </view> -->
                     </block>
                 </scroll-view>
             </view>
@@ -72,7 +72,7 @@
                 <view class="option weui-flex__item" catchtap="chooseImg">相册 </view>
                 <view class="option weui-flex__item" catchtap="useCam">相机 </view>
                 <view class="option weui-flex__item">直播 </view>
-                <view class="option weui-flex__item">位置 </view>
+                <view class="option weui-flex__item" catchtap="openMap">位置 </view>
             </view>
         </view>
     </block>
@@ -92,7 +92,12 @@
                 title: 'Event 1'
             },
             aniStyle: true,
-            increase: false
+            increase: false,
+            name: '',
+            address: '',
+            latitude: '',
+            longitude: '',
+
         }
         openMenu() {
             this.aniStyle = true
@@ -103,7 +108,7 @@
         }
         onLoad() {
             wepy.setNavigationBarTitle({
-                title: this.datas.title
+                title: wepy.$instance.globalData.eventTitle
             });
         }
         guid() {
@@ -113,8 +118,9 @@
                 return v.toString(16);
             });
         }
-        upload(page, path) {
-            console.log('path' + path)
+        // 上传到服务器
+        uploadImg(page, path) {
+            console.log('Local path is: ' + path)
             fileName = this.guid()
             wepy.showToast({
                 title: '正在上传', //提示的内容,
@@ -124,16 +130,47 @@
                 success: res => {}
             });
             wepy.uploadFile({
-                url: appUrl + "/eventFeedback/uploadResultPic?condense=" + condense, //开发者服务器 url
-                filePath: Array.isArray(path) ? path[0] : path, //要上传文件资源的路径
-                name: fileName, //文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容
+                url: appUrl + "/eventFeedback/uploadResultPic", //开发者服务器 url
+                filePath: path[0], //要上传文件资源的路径 Array.isArray(path) ? path[0] : 
+                name: 'file', //文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容
                 header: {
-                    "Connection": "Keep-Alive",
                     "Charset": "UTF-8",
-                    "Content-Type": "image/*"
+                    "Content-Type": "text/html"
+                },
+                formData: {
+                    'type': '.jpg'
                 },
                 success: res => {
-                    console.log('from upload')
+                    console.log('from uploadImg')
+                    console.log(res)
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+        }
+        uploadClip(page, path) {
+            console.log('Local path is: ' + path)
+            fileName = this.guid()
+            wepy.showToast({
+                title: '正在上传', //提示的内容,
+                icon: 'loading', //图标,
+                duration: 2000, //延迟时间,
+                mask: true, //显示透明蒙层，防止触摸穿透,
+                success: res => {}
+            });
+            wepy.uploadFile({
+                url: appUrl + "/eventFeedback/uploadResultVideo", //开发者服务器 url
+                filePath: path, //要上传文件资源的路径 Array.isArray(path) ? path[0] : 
+                name: 'file', //文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容
+                header: {
+                    "Charset": "UTF-8",
+                    "Content-Type": "text/html"
+                },
+                formData: {
+                    'type':'.mp4'
+                },
+                success: res => {
+                    console.log('from uploadImg')
                     console.log(res)
                 },
                 fail: () => {},
@@ -161,10 +198,10 @@
                         sizeType: [res.confirm ? 'compressed' : 'original'],
                         sourceType: ['album'],
                         success: res => {
-                            console.log('select image')
+                            console.log('from chooseImg func')
                             console.log(res)
                             const tempFilePaths = res.tempFilePaths
-                            that.upload(that, tempFilePaths)
+                            that.uploadImg(that, tempFilePaths)
                             // console.log('the file path is: ')
                             // console.log(tempFilePaths)
                         }, //返回图片的本地文件路径列表 tempFilePaths,
@@ -192,7 +229,7 @@
                                 console.log('from chooseImg callback')
                                 console.log(res)
                                 var tempFilePaths = res.tempFilePaths
-                                that.upload(that, tempFilePaths)
+                                that.uploadImg(that, tempFilePaths)
                             }, //返回图片的本地文件路径列表 tempFilePaths,
                             fail: () => {},
                             complete: () => {}
@@ -207,10 +244,36 @@
                                 console.log('from chooseVideo callback')
                                 console.log(res)
                                 var tempFilePath = res.tempFilePath
-                                that.upload(that, tempFilePath)
+                                that.uploadClip(that, tempFilePath)
                             }
                         })
                     }
+                }
+            });
+        }
+        openMap() {
+            wepy.chooseLocation({
+                success: res => {
+                    console.log(res)
+                    this.address = res.address
+                    this.latitude = res.latitude
+                    this.longitude = res.longitude
+                    this.name = res.name
+
+                    let location = '当前位置为: ' + this.name + '\r\n 详细地址为: ' + this.address + '\r\n 经度为: ' + this.longitude + '\r\n 纬度为: ' + this.latitude
+
+                    wepy.showModal({
+                      title: '是否发送?', //提示的标题,
+                      content: location, //提示的内容,
+                      showCancel: true, //是否显示取消按钮,
+                      cancelText: '取消', //取消按钮的文字，默认为取消，最多 4 个字符,
+                      cancelColor: '#000000', //取消按钮的文字颜色,
+                      confirmText: '确定', //确定按钮的文字，默认为取消，最多 4 个字符,
+                      confirmColor: '#3CC51F', //确定按钮的文字颜色,
+                      success: res => {}
+                    });
+                    
+                    
                 }
             });
         }

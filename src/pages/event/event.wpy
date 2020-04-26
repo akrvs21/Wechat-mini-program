@@ -71,7 +71,7 @@
     <!-- <block wx:for="{{items}}" wx:for-item="item" wx:key="index"> -->
     <block wx:for="{{incidents}}" wx:for-item="item" wx:key="index">
       <!-- Each cell -->
-      <view class="item" catchtap="goToDetails" wx:if="{{ item.event }}" data-eventId="{{item.event.iId}}" data-eventLon="{{item.event.dLongitude}}" data-eventLat="{{item.event.dLatitude}}">
+      <view class="item" catchtap="goToDetails" wx:if="{{ item.event }}" data-eventId="{{item.event.iId}}" data-eventname="{{ item.event.vcTitle }}" data-eventLon="{{item.event.dLongitude}}" data-eventLat="{{item.event.dLatitude}}">
         <!-- Address -->
         <view class="address">
           <text class="address_text">{{ item.event.vcTitle }}</text>
@@ -150,6 +150,7 @@
       eventId = e.currentTarget.dataset.eventid
       eventLon = e.currentTarget.dataset.eventlon
       eventLat = e.currentTarget.dataset.eventlat
+      let eventName = e.currentTarget.dataset.eventname
       console.log(e)
       // console.log('This is event ID ' + eventId)
       // console.log('This is event Lon ' + eventLon)
@@ -165,6 +166,7 @@
         success: res => {
           // this.getAllEventsByUserId();
           wepy.$instance.globalData.eventId = eventId
+          wepy.$instance.globalData.eventTitle = eventName
           wepy.navigateTo({
             url: './eventDetail',
             success: function() {
